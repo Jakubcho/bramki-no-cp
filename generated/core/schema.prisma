@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/core"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(EDITOR)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+model Event {
+  id       String  @id @default(cuid())
+  name     String
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  steps Step[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventTemplate {
+  id        String   @id @default(cuid())
+  name      String
+  structure Json
+  createdAt DateTime @default(now())
+}
+
+model Step {
+  id      String @id @default(cuid())
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  order        Int
+  type         StepType
+  translations StepTranslation[]
+
+  options Option[]
+
+  createdAt DateTime @default(now())
+}
+
+model StepTranslation {
+  id     String @id @default(cuid())
+  stepId String
+  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  locale String
+  title  String
+
+  @@unique([stepId, locale])
+}
+
+enum StepType {
+  SINGLE_CHOICE
+  MULTI_CHOICE
+  MULTI_CHOICE_ICON
+  FORM
+  CONSENT
+}
+
+model Option {
+  id     String @id @default(cuid())
+  stepId String
+  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  value   String
+  iconUrl String?
+  order   Int
+
+  translations OptionTranslation[]
+
+  createdAt DateTime @default(now())
+}
+
+model OptionTranslation {
+  id       String @id @default(cuid())
+  optionId String
+  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  locale String
+  label  String
+
+  @@unique([optionId, locale])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  userId    String?
+  userEmail String?
+  userRole  String?
+
+  action   String
+  entity   String
+  entityId String?
+
+  meta Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([entity])
+  @@index([entityId])
+  @@index([createdAt])
+}
