@@ -111,6 +111,7 @@ export default function EventEditorClient({ id }: { id: string }) {
   async function addStep() {
     const form = new FormData();
 
+    const optionsToSave = newOptions;
     const isTechnicalStep = type === "FORM" || type === "CONSENT";
 
     const finalTitlePl = isTechnicalStep && !currentTitle.pl ? (type === "FORM" ? "Formularz" : "Zgody") : currentTitle.pl;
@@ -121,7 +122,7 @@ export default function EventEditorClient({ id }: { id: string }) {
     form.append("title[en]", finalTitleEn || "");
 
     if (!isTechnicalStep) {
-      opts.forEach((o, i) => {
+      optionsToSave.forEach((o, i) => {
         form.append(`options[${i}][value]`, o.value || "");
         form.append(`options[${i}][label][pl]`, o.translations.pl || "");
         form.append(`options[${i}][label][en]`, o.translations.en || "");
@@ -166,7 +167,7 @@ export default function EventEditorClient({ id }: { id: string }) {
         if (o.id) {
           formData.append(`options[${i}][id]`, o.id);
         }
-        formData.append(`options[${i}][value]`, o.value || "");
+        formData.append(`options[${i}][value]`, o.value || `option_${i}`);
         formData.append(`options[${i}][label][pl]`, o.translations.pl || "");
         formData.append(`options[${i}][label][en]`, o.translations.en || "");
 

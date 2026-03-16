@@ -174,16 +174,9 @@ exports.Prisma.NullableJsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  id: 'id',
-  email: 'email',
-  password: 'password'
-};
-
-exports.Prisma.EventOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.JsonNullValueFilter = {
@@ -192,55 +185,9 @@ exports.Prisma.JsonNullValueFilter = {
   AnyNull: Prisma.AnyNull
 };
 
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-};
-
-exports.Prisma.EventTemplateOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name'
-};
-
-exports.Prisma.StepOrderByRelevanceFieldEnum = {
-  id: 'id',
-  eventId: 'eventId'
-};
-
-exports.Prisma.StepTranslationOrderByRelevanceFieldEnum = {
-  id: 'id',
-  stepId: 'stepId',
-  locale: 'locale',
-  title: 'title'
-};
-
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.OptionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  stepId: 'stepId',
-  value: 'value',
-  iconUrl: 'iconUrl'
-};
-
-exports.Prisma.OptionTranslationOrderByRelevanceFieldEnum = {
-  id: 'id',
-  optionId: 'optionId',
-  locale: 'locale',
-  label: 'label'
-};
-
-exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  userEmail: 'userEmail',
-  userRole: 'userRole',
-  action: 'action',
-  entity: 'entity',
-  entityId: 'entityId'
 };
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
@@ -276,7 +223,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/warsawdefencesec/domains/aktywacja.warsawdefencesecurityweek.com/app/generated/core",
+      "value": "/var/www/aktywacja.warsawexpo.eu/app/generated/core",
       "fromEnvVar": null
     },
     "config": {
@@ -285,12 +232,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-1.1.x",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/warsawdefencesec/domains/aktywacja.warsawdefencesecurityweek.com/app/prisma/core.schema.prisma",
+    "sourceFilePath": "/var/www/aktywacja.warsawexpo.eu/app/prisma/core.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -303,22 +250,22 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "mysql",
+  "activeProvider": "postgresql",
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": "DATABASE_URL",
+        "fromEnvVar": "DATABASE_URL_CONFIG",
         "value": null
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/core\"\n}\n\ndatasource db {\n  provider          = \"mysql\"\n  url               = env(\"DATABASE_URL\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  email     String   @unique\n  password  String\n  role      Role     @default(EDITOR)\n  createdAt DateTime @default(now())\n}\n\nenum Role {\n  ADMIN\n  EDITOR\n}\n\nmodel Event {\n  id       String  @id @default(cuid())\n  name     String\n  slug     String  @unique\n  isActive Boolean @default(true)\n\n  steps Step[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel EventTemplate {\n  id        String   @id @default(cuid())\n  name      String\n  structure Json\n  createdAt DateTime @default(now())\n}\n\nmodel Step {\n  id      String @id @default(cuid())\n  eventId String\n  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)\n\n  order        Int\n  type         StepType\n  translations StepTranslation[]\n\n  options Option[]\n\n  createdAt DateTime @default(now())\n}\n\nmodel StepTranslation {\n  id     String @id @default(cuid())\n  stepId String\n  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)\n\n  locale String\n  title  String\n\n  @@unique([stepId, locale])\n}\n\nenum StepType {\n  SINGLE_CHOICE\n  MULTI_CHOICE\n  MULTI_CHOICE_ICON\n  FORM\n  CONSENT\n}\n\nmodel Option {\n  id     String @id @default(cuid())\n  stepId String\n  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)\n\n  value   String\n  iconUrl String?\n  order   Int\n\n  translations OptionTranslation[]\n\n  createdAt DateTime @default(now())\n}\n\nmodel OptionTranslation {\n  id       String @id @default(cuid())\n  optionId String\n  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)\n\n  locale String\n  label  String\n\n  @@unique([optionId, locale])\n}\n\nmodel AuditLog {\n  id String @id @default(cuid())\n\n  userId    String?\n  userEmail String?\n  userRole  String?\n\n  action   String\n  entity   String\n  entityId String?\n\n  meta Json?\n\n  createdAt DateTime @default(now())\n\n  @@index([entity])\n  @@index([entityId])\n  @@index([createdAt])\n}\n",
-  "inlineSchemaHash": "ea8c1ab3349d2d21e1cee20ce4db54e7f82e6e1df9676e3012a20d29f9a168ac",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/core\"\n}\n\ndatasource db {\n  provider          = \"postgresql\"\n  url               = env(\"DATABASE_URL_CONFIG\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  email     String   @unique\n  password  String\n  role      Role     @default(EDITOR)\n  createdAt DateTime @default(now())\n}\n\nmodel Event {\n  id        String   @id @default(cuid())\n  name      String\n  slug      String   @unique\n  isActive  Boolean  @default(true)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  steps     Step[]\n}\n\nmodel EventTemplate {\n  id        String   @id @default(cuid())\n  name      String\n  structure Json\n  createdAt DateTime @default(now())\n}\n\nmodel Step {\n  id           String            @id @default(cuid())\n  eventId      String\n  order        Int\n  type         StepType\n  createdAt    DateTime          @default(now())\n  options      Option[]\n  event        Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)\n  translations StepTranslation[]\n}\n\nmodel StepTranslation {\n  id     String @id @default(cuid())\n  stepId String\n  locale String\n  title  String\n  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)\n\n  @@unique([stepId, locale])\n}\n\nmodel Option {\n  id           String              @id @default(cuid())\n  stepId       String\n  value        String\n  iconUrl      String?\n  order        Int\n  createdAt    DateTime            @default(now())\n  step         Step                @relation(fields: [stepId], references: [id], onDelete: Cascade)\n  translations OptionTranslation[]\n}\n\nmodel OptionTranslation {\n  id       String @id @default(cuid())\n  optionId String\n  locale   String\n  label    String\n  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)\n\n  @@unique([optionId, locale])\n}\n\nmodel AuditLog {\n  id        String   @id @default(cuid())\n  userId    String?\n  userEmail String?\n  userRole  String?\n  action    String\n  entity    String\n  entityId  String?\n  meta      Json?\n  createdAt DateTime @default(now())\n\n  @@index([entity])\n  @@index([entityId])\n  @@index([createdAt])\n}\n\nenum Role {\n  ADMIN\n  EDITOR\n}\n\nenum StepType {\n  SINGLE_CHOICE\n  MULTI_CHOICE\n  MULTI_CHOICE_ICON\n  FORM\n  CONSENT\n}\n",
+  "inlineSchemaHash": "541692748f0d8a282f557913465f3f1af40f565b2671d042fe1539b158079721",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Event\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"steps\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"EventToStep\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"EventTemplate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"structure\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Step\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"EventToStep\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"StepType\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"StepTranslation\",\"relationName\":\"StepToStepTranslation\"},{\"name\":\"options\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToStep\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"StepTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"StepToStepTranslation\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Option\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"OptionToStep\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"iconUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"OptionTranslation\",\"relationName\":\"OptionToOptionTranslation\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"OptionTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"optionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"option\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToOptionTranslation\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userRole\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"meta\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Event\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"steps\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"EventToStep\"}],\"dbName\":null},\"EventTemplate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"structure\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Step\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"StepType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"options\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToStep\"},{\"name\":\"event\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"EventToStep\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"StepTranslation\",\"relationName\":\"StepToStepTranslation\"}],\"dbName\":null},\"StepTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"StepToStepTranslation\"}],\"dbName\":null},\"Option\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"iconUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"OptionToStep\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"OptionTranslation\",\"relationName\":\"OptionToOptionTranslation\"}],\"dbName\":null},\"OptionTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"optionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"option\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToOptionTranslation\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userRole\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"meta\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
@@ -332,7 +279,7 @@ config.compilerWasm = undefined
 
 config.injectableEdgeEnv = () => ({
   parsed: {
-    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+    DATABASE_URL_CONFIG: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL_CONFIG'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL_CONFIG || undefined
   }
 })
 

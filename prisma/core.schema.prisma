@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL_CONFIG")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -17,21 +17,14 @@ model User {
   createdAt DateTime @default(now())
 }
 
-enum Role {
-  ADMIN
-  EDITOR
-}
-
 model Event {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
   isActive  Boolean  @default(true)
-
-  steps     Step[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  steps     Step[]
 }
 
 model EventTemplate {
@@ -42,28 +35,66 @@ model EventTemplate {
 }
 
 model Step {
-  id        String   @id @default(cuid())
-  eventId   String
-  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
-  order     Int
-  type      StepType
+  id           String            @id @default(cuid())
+  eventId      String
+  order        Int
+  type         StepType
+  createdAt    DateTime          @default(now())
+  options      Option[]
+  event        Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
   translations StepTranslation[]
-
-  options   Option[]
-
-  createdAt DateTime @default(now())
 }
 
 model StepTranslation {
-  id      String @id @default(cuid())
-  stepId  String
-  step    Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)
-
-  locale  String
-  title   String
+  id     String @id @default(cuid())
+  stepId String
+  locale String
+  title  String
+  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)
 
   @@unique([stepId, locale])
+}
+
+model Option {
+  id           String              @id @default(cuid())
+  stepId       String
+  value        String
+  iconUrl      String?
+  order        Int
+  createdAt    DateTime            @default(now())
+  step         Step                @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  translations OptionTranslation[]
+}
+
+model OptionTranslation {
+  id       String @id @default(cuid())
+  optionId String
+  locale   String
+  label    String
+  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, locale])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userEmail String?
+  userRole  String?
+  action    String
+  entity    String
+  entityId  String?
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity])
+  @@index([entityId])
+  @@index([createdAt])
+}
+
+enum Role {
+  ADMIN
+  EDITOR
 }
 
 enum StepType {
@@ -72,49 +103,4 @@ enum StepType {
   MULTI_CHOICE_ICON
   FORM
   CONSENT
-}
-
-model Option {
-  id        String   @id @default(cuid())
-  stepId    String
-  step      Step     @relation(fields: [stepId], references: [id], onDelete: Cascade)
-
-  value     String
-  iconUrl   String?
-  order     Int
-
-  translations OptionTranslation[]
-
-  createdAt DateTime @default(now())
-}
-
-model OptionTranslation {
-  id       String @id @default(cuid())
-  optionId String
-  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)
-
-  locale   String
-  label    String
-
-  @@unique([optionId, locale])
-}
-
-model AuditLog {
-  id         String   @id @default(cuid())
-
-  userId     String?
-  userEmail  String?
-  userRole   String?
-
-  action     String
-  entity     String
-  entityId   String?
-
-  meta       Json?
-
-  createdAt  DateTime @default(now())
-
-  @@index([entity])
-  @@index([entityId])
-  @@index([createdAt])
 }

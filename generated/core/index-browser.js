@@ -202,16 +202,9 @@ exports.Prisma.NullableJsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  id: 'id',
-  email: 'email',
-  password: 'password'
-};
-
-exports.Prisma.EventOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.JsonNullValueFilter = {
@@ -220,55 +213,9 @@ exports.Prisma.JsonNullValueFilter = {
   AnyNull: Prisma.AnyNull
 };
 
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-};
-
-exports.Prisma.EventTemplateOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name'
-};
-
-exports.Prisma.StepOrderByRelevanceFieldEnum = {
-  id: 'id',
-  eventId: 'eventId'
-};
-
-exports.Prisma.StepTranslationOrderByRelevanceFieldEnum = {
-  id: 'id',
-  stepId: 'stepId',
-  locale: 'locale',
-  title: 'title'
-};
-
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.OptionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  stepId: 'stepId',
-  value: 'value',
-  iconUrl: 'iconUrl'
-};
-
-exports.Prisma.OptionTranslationOrderByRelevanceFieldEnum = {
-  id: 'id',
-  optionId: 'optionId',
-  locale: 'locale',
-  label: 'label'
-};
-
-exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  userEmail: 'userEmail',
-  userRole: 'userRole',
-  action: 'action',
-  entity: 'entity',
-  entityId: 'entityId'
 };
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',

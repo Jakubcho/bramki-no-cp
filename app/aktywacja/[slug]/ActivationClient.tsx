@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import FormStep, { isFormValid } from "./FormStep";
 
 type StepType =
@@ -54,8 +54,12 @@ const EMPTY_FORM = {
 export default function ActivationClient({ event }: { event: Event }) {
   const [mounted, setMounted] = useState(false);
   const [lang, setLang] = useState<"pl" | "en">("pl");
-  const [mode, setMode] = useState<"idle" | "manual" | "qr">("idle");
-  const [scannedQr, setScannedQr] = useState<string | null>(null);
+  const [mode, setMode] = useState<"idle" | "manual">("idle");
+
+  // Stany dla skanera QR i blokady (pauzy)
+  const [isScanning, setIsScanning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
 
   const steps = useMemo(() => {
     return [...event.steps].sort((a, b) => a.order - b.order);
@@ -70,6 +74,64 @@ export default function ActivationClient({ event }: { event: Event }) {
     setMounted(true);
   }, []);
 
+  // Funkcja pobierająca dane z QR z wbudowaną pauzą
+  const handleQrFetch = useCallback(async (code: string) => {
+    // Jeśli trwa skanowanie lub jesteśmy w fazie pauzy (5s), ignorujemy kod
+    if (isScanning || isPaused) return;
+
+    setIsScanning(true);
+    setScanError(null);
+
+    try {
+      const res = await fetch(`/api/qr/${event.slug}/${code}`);
+
+      if (!res.ok) {
+        setScanError(lang === "pl" ? "Błędny kod QR" : "Invalid QR code");
+        setIsScanning(false);
+
+        // AKTYWACJA PAUZY: blokujemy skaner na 5 sekund po błędzie
+        setIsPaused(true);
+        setTimeout(() => {
+          setScanError(null);
+          setIsPaused(false);
+        }, 5000);
+        return;
+      }
+
+      const data = await res.json();
+      const [firstName = "", lastName = ""] = (data.full_name || "").split(" ");
+
+      setAnswers(a => ({
+        ...a,
+        form: {
+          ...EMPTY_FORM,
+          firstName,
+          lastName,
+          email: data.email || "",
+          phone: data.phone || "",
+          street: data.street_address || "",
+          buildingNumber: data.house_number || "",
+          postalCode: data.postal_code || "",
+          city: data.city || "",
+          country: data.country || "",
+        }
+      }));
+
+      // Jeśli sukces, przechodzimy do formularza (tutaj nie potrzebujemy pauzy)
+      setMode("manual");
+    } catch (err) {
+      setScanError(lang === "pl" ? "Błąd połączenia" : "Connection error");
+      setIsPaused(true);
+      setTimeout(() => {
+        setScanError(null);
+        setIsPaused(false);
+      }, 5000);
+    } finally {
+      setIsScanning(false);
+    }
+  }, [event.slug, lang, isScanning, isPaused]);
+
+  // Obsługa klawiatury (skanera) z blokadą wejścia
   useEffect(() => {
     if (mode !== "idle") return;
 
@@ -77,19 +139,14 @@ export default function ActivationClient({ event }: { event: Event }) {
     let timeout: NodeJS.Timeout;
 
     function handleKey(e: KeyboardEvent) {
-      if (
-        e.key === "Shift" ||
-        e.key === "Control" ||
-        e.key === "Alt" ||
-        e.key === "Meta"
-      ) {
-        return;
-      }
+      // Ignoruj klawisze całkowicie, jeśli skaner jest zablokowany lub zajęty
+      if (isPaused || isScanning) return;
+
+      if (["Shift", "Control", "Alt", "Meta"].includes(e.key)) return;
 
       if (e.key === "Enter") {
         if (buffer.length > 3) {
-          setScannedQr(buffer);
-          setMode("qr");
+          handleQrFetch(buffer);
         }
         buffer = "";
         return;
@@ -107,51 +164,12 @@ export default function ActivationClient({ event }: { event: Event }) {
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [mode]);
-
-  useEffect(() => {
-    if (!scannedQr || mode !== "qr") return;
-
-    async function fetchQr() {
-      const res = await fetch(`/api/qr/${event.slug}/${scannedQr}`);
-      if (!res.ok) {
-        alert("QR not found");
-        setMode("idle");
-        return;
-      }
-
-      const data = await res.json();
-
-      const [firstName = "", lastName = ""] = (data.full_name || "").split(" ");
-
-      setAnswers(a => ({
-        ...a,
-        form: {
-          firstName,
-          lastName,
-          email: data.email || "",
-          phoneCode: "+48",
-          phone: data.phone || "",
-          street: data.street_address || "",
-          buildingNumber: data.house_number || "",
-          postalCode: data.postal_code || "",
-          city: data.city || "",
-          country: data.country || "",
-        }
-      }));
-
-      setMode("manual");
-    }
-
-    fetchQr();
-  }, [scannedQr, mode, event.slug]);
+  }, [mode, handleQrFetch, isPaused, isScanning]);
 
   const step = steps[currentStep];
 
-
   const getT = (translations: Translation[] | undefined, field: "title" | "label") => {
     if (!translations) return "";
-
     return translations.find(t => t.locale === lang)?.[field] ||
       translations.find(t => t.locale === "pl")?.[field] || "";
   };
@@ -179,6 +197,7 @@ export default function ActivationClient({ event }: { event: Event }) {
   }
 
   function canGoNext() {
+    if (!step) return false;
     if (step.type === "SINGLE_CHOICE") return !!answers[step.id];
     if (step.type === "FORM") return isFormValid(answers.form);
     if (step.type === "MULTI_CHOICE" || step.type === "MULTI_CHOICE_ICON") {
@@ -187,168 +206,127 @@ export default function ActivationClient({ event }: { event: Event }) {
     return true;
   }
 
-  if (!mounted) {
-    return <div className="min-h-screen bg-white" />;
-  }
+  if (!mounted) return <div className="min-h-screen bg-white" />;
 
+  // EKRAN STARTOWY (IDLE)
   if (mode === "idle") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-8">
-        <h1 className="text-3xl font-black text-slate-800">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-8 p-2 text-center">
+        <h1 className="text-4xl font-black text-slate-800 tracking-tight">
           {event.name}
         </h1>
 
-        <button
-          onClick={() => setMode("manual")}
-          className="px-10 py-5 bg-slate-900 text-white rounded-2xl font-bold text-lg shadow-xl"
-        >
-          {lang === "pl" ? "Zarejestruj się" : "Register"}
-        </button>
+        <div className="flex flex-col items-center gap-6 w-full max-w-sm">
+          <button
+            onClick={() => setMode("manual")}
+            disabled={isScanning || isPaused}
+            className={`w-full px-10 py-6 text-white rounded-2xl font-bold text-xl shadow-2xl transition-all active:scale-95
+              ${isPaused ? "bg-red-400 cursor-not-allowed" : "bg-slate-900 hover:bg-black"}`}
+          >
+            {isScanning && (lang === "pl" ? "Weryfikacja..." : "Verifying...")}
+            {isPaused && (lang === "pl" ? "Zablokowane" : "Locked")}
+            {!isScanning && !isPaused && (lang === "pl" ? "Zarejestruj się" : "Register")}
+          </button>
 
-        <p className="text-sm text-slate-400">
-          {lang === "pl"
-            ? "Zeskanuj kod QR aby wczytać dane"
-            : "Scan QR code to load data"}
-        </p>
+          {/* POWIADOMIENIE O BŁĘDZIE I CZASIE PAUZY */}
+          {scanError && (
+            <div className="flex flex-col items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="bg-red-50 text-red-600 px-6 py-4 rounded-2xl font-bold border border-red-100 shadow-sm">
+                {scanError}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-red-400 rounded-full animate-ping" />
+                <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">
+                  {lang === "pl" ? "Pauza: Oczekiwanie 5s" : "Pause: Waiting 5s"}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <p className={`font-medium transition-colors ${isPaused ? "text-red-300" : "text-slate-400"}`}>
+            {isScanning && (lang === "pl" ? "Przetwarzanie danych..." : "Processing data...")}
+            {isPaused && (lang === "pl" ? "Zwolnij! Odczekaj chwilę przed kolejnym skanem." : "Slow down! Wait before scanning again.")}
+            {!isScanning && !isPaused && (lang === "pl" ? "Zeskanuj kod QR aby wczytać dane" : "Scan QR code to load data")}
+          </p>
+          <div className="flex justify-center gap-4 pt-4">
+            <button onClick={() => setLang("pl")} className={`text-sm font-bold ${lang === 'pl' ? 'text-blue-600' : 'text-slate-300'}`}>PL</button>
+            <button onClick={() => setLang("en")} className={`text-sm font-bold ${lang === 'en' ? 'text-blue-600' : 'text-slate-300'}`}>EN</button>
+          </div>
+        </div>
       </div>
     );
   }
-  return (
 
-    <div className="h-screen bg-white md:bg-gray-50 flex flex-col items-center px-4 py-6 md:py-12 font-sans text-slate-900 overflow-hidden">
+  // EKRAN FORMULARZA / KROKÓW
+  return (
+    <div className="h-screen bg-white md:bg-gray-50 flex flex-col items-center px-4 py-2 md:py-6 font-sans text-slate-900 overflow-hidden">
 
       {/* LANGUAGE PICKER */}
       <div className="fixed top-6 right-6 flex gap-2 z-50">
-        <button
-          onClick={() => setLang("pl")}
-          className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center text-xl shadow-sm ${lang === "pl" ? "border-blue-600 bg-white scale-110 shadow-md" : "border-transparent bg-gray-100 opacity-50 hover:opacity-100"}`}
-        >
-          🇵🇱
-        </button>
-        <button
-          onClick={() => setLang("en")}
-          className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center text-xl shadow-sm ${lang === "en" ? "border-blue-600 bg-white scale-110 shadow-md" : "border-transparent bg-gray-100 opacity-50 hover:opacity-100"}`}
-        >
-          🇬🇧
-        </button>
+        <button onClick={() => setLang("pl")} className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center text-xl shadow-sm ${lang === "pl" ? "border-blue-600 bg-white scale-110 shadow-md" : "border-transparent bg-gray-100 opacity-50 hover:opacity-100"}`}>🇵🇱</button>
+        <button onClick={() => setLang("en")} className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center text-xl shadow-sm ${lang === "en" ? "border-blue-600 bg-white scale-110 shadow-md" : "border-transparent bg-gray-100 opacity-50 hover:opacity-100"}`}>🇬🇧</button>
       </div>
 
-      {/* HEADER: PROGRESS & TITLE (Zawsze na środku) */}
       <div className="w-full max-w-3xl flex flex-col items-center shrink-0">
         <div className="w-full mb-8">
           <div className="flex justify-between items-end mb-4 px-1">
             <div className="space-y-1">
-              <span className="text-[10px] font-black tracking-[0.2em] text-blue-600 uppercase">
-                {ui.step} {currentStep + 1} {ui.of} {steps.length}
-              </span>
-              <h1
-                className="text-2xl md:text-3xl font-black tracking-tight text-slate-800"
-                dangerouslySetInnerHTML={{ __html: getT(step.translations, "title") }}
-              />
+              <span className="text-[10px] font-black tracking-[0.2em] text-blue-600 uppercase">{ui.step} {currentStep + 1} {ui.of} {steps.length}</span>
+              <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-800" dangerouslySetInnerHTML={{ __html: getT(step?.translations, "title") }} />
             </div>
             <div className="text-right">
-              <span className="text-sm font-bold text-slate-400">
-                {Math.round(((currentStep + 1) / steps.length) * 100)}%
-              </span>
+              <span className="text-sm font-bold text-slate-400">{Math.round(((currentStep + 1) / steps.length) * 100)}%</span>
             </div>
           </div>
-
           <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-blue-600 transition-all duration-700 ease-in-out rounded-full shadow-[0_0_12px_rgba(37,99,235,0.4)]"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            />
+            <div className="h-full bg-blue-600 transition-all duration-700 ease-in-out rounded-full shadow-[0_0_12px_rgba(37,99,235,0.4)]" style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }} />
           </div>
         </div>
       </div>
 
-      {/* CONTENT AREA: Scrolluje się tylko to, co poniżej */}
-      <div className={`w-full flex-1 overflow-y-auto px-2 custom-scrollbar ${step.type === "MULTI_CHOICE_ICON" ? "max-w-6xl" : "max-w-4xl"}`}>
+      <div className={`w-full flex-1 overflow-y-auto px-2 custom-scrollbar ${step?.type === "MULTI_CHOICE_ICON" ? "max-w-6xl" : "max-w-4xl"}`}>
         <div className="pb-6">
-          {(step.type === "SINGLE_CHOICE" || step.type === "MULTI_CHOICE") && (
+          {(step?.type === "SINGLE_CHOICE" || step?.type === "MULTI_CHOICE") && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               {step.options.map(o => {
-                const isSelected = step.type === "SINGLE_CHOICE"
-                  ? answers[step.id] === o.id
-                  : (answers[step.id] || []).includes(o.id);
-
+                const isSelected = step.type === "SINGLE_CHOICE" ? answers[step.id] === o.id : (answers[step.id] || []).includes(o.id);
                 return (
-                  <button
-                    key={o.id}
-                    onClick={() => step.type === "SINGLE_CHOICE" ? setAnswer(step.id, o.id) : toggleMulti(step.id, o.id)}
-                    className={`w-full group relative flex items-center justify-between px-6 py-5 rounded-2xl border-2 transition-all duration-200 active:scale-[0.98]
-                ${isSelected
-                        ? "border-blue-600 bg-blue-50/50 shadow-md shadow-blue-900/5"
-                        : "border-slate-100 bg-white hover:border-slate-300 shadow-sm"
-                      }`}
-                  >
+                  <button key={o.id} onClick={() => step.type === "SINGLE_CHOICE" ? setAnswer(step.id, o.id) : toggleMulti(step.id, o.id)} className={`w-full group relative flex items-center justify-between px-6 py-5 rounded-2xl border-2 transition-all duration-200 active:scale-[0.98] ${isSelected ? "border-blue-600 bg-blue-50/50 shadow-md shadow-blue-900/5" : "border-slate-100 bg-white hover:border-slate-300 shadow-sm"}`}>
                     <div className="flex items-center gap-4">
-                      <div className={`w-[20px] h-[20px] aspect-square rounded-full border-2 flex items-center justify-center transition-all
-                  ${isSelected ? "border-blue-600 bg-blue-600" : "border-slate-200 bg-white"}`}>
-                        {isSelected && <div className="w-2 h-2 bg-white rounded-full animate-in zoom-in duration-200" />}
-                      </div>
-                      <span
-                        className={`text-lg font-semibold transition-colors text-left ${isSelected ? "text-blue-900" : "text-slate-700"}`}
-                        dangerouslySetInnerHTML={{ __html: getT(o.translations, "label") }}
-                      />
+                      <div className={`w-[20px] h-[20px] aspect-square rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? "border-blue-600 bg-blue-600" : "border-slate-200 bg-white"}`}>{isSelected && <div className="w-2 h-2 bg-white rounded-full animate-in zoom-in duration-200" />}</div>
+                      <span className={`text-lg font-semibold transition-colors text-left ${isSelected ? "text-blue-900" : "text-slate-700"}`} dangerouslySetInnerHTML={{ __html: getT(o.translations, "label") }} />
                     </div>
-                    {isSelected && (
-                      <span className="text-blue-600 animate-in fade-in zoom-in">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </span>
-                    )}
+                    {isSelected && <span className="text-blue-600 animate-in fade-in zoom-in"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg></span>}
                   </button>
                 );
               })}
             </div>
           )}
 
-          {step.type === "MULTI_CHOICE_ICON" && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {step?.type === "MULTI_CHOICE_ICON" && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {step.options.map(o => {
                 const selected = (answers[step.id] || []).includes(o.id);
                 return (
-                  <button
-                    key={o.id}
-                    onClick={() => toggleMulti(step.id, o.id)}
-                    className={`group relative border-2 rounded-[2rem] px-4 py-8 flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-[0.98] min-h-[180px]
-                ${selected
-                        ? "border-blue-600 bg-blue-50/50 shadow-xl shadow-blue-900/5 ring-4 ring-blue-600/5"
-                        : "border-slate-100 bg-white hover:border-slate-300 hover:shadow-md"
-                      }`}
-                  >
-                    {o.iconUrl && (
-                      <div className={`p-4 rounded-2xl transition-all duration-300
-                  ${selected ? "bg-white shadow-sm scale-110" : "bg-slate-50 group-hover:bg-white"}`}>
-                        <img src={o.iconUrl} className="w-12 h-12 object-contain" alt="" />
-                      </div>
-                    )}
-                    <span
-                      className={`font-bold text-base text-center leading-tight transition-colors
-                  ${selected ? "text-blue-900" : "text-slate-600 group-hover:text-slate-900"}`}
-                      dangerouslySetInnerHTML={{ __html: getT(o.translations, "label") }}
-                    />
-                    <div className={`absolute top-4 right-4 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300
-                ${selected ? "bg-blue-600 scale-100 opacity-100" : "bg-slate-100 scale-50 opacity-0"}`}>
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
+                  <button key={o.id} onClick={() => toggleMulti(step.id, o.id)} className={`group relative border-2 rounded-[2rem] px-2 py-2 flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-[0.98] min-h-[180px] ${selected ? "border-blue-600 bg-blue-50/50 shadow-xl shadow-blue-900/5 ring-4 ring-blue-600/5" : "border-slate-100 bg-white hover:border-slate-300 hover:shadow-md"}`}>
+                    {o.iconUrl && <div className={`p-1 rounded-2xl transition-all duration-300 ${selected ? "bg-white shadow-sm scale-110" : "bg-slate-50 group-hover:bg-white"}`}><img src={o.iconUrl} className="w-12 h-12 object-contain" alt="" /></div>}
+                    <span className={`font-bold text-base text-center leading-tight transition-colors ${selected ? "text-blue-900" : "text-slate-600 group-hover:text-slate-900"}`} dangerouslySetInnerHTML={{ __html: getT(o.translations, "label") }} />
+                    <div className={`absolute top-4 right-4 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 ${selected ? "bg-blue-600 scale-100 opacity-100" : "bg-slate-100 scale-50 opacity-0"}`}><svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg></div>
                   </button>
                 );
               })}
             </div>
           )}
 
-          {step.type === "FORM" && (
+          {step?.type === "FORM" && (
             <div className="max-w-xl mx-auto bg-white p-6 md:p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm">
               <FormStep lang={lang} value={answers.form} onChange={v => setAnswers(a => ({ ...a, form: v }))} />
             </div>
           )}
 
-          {step.type === "CONSENT" && (
+          {step?.type === "CONSENT" && (
             <div className="max-w-xl mx-auto space-y-4 bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm text-center">
               <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -359,34 +337,22 @@ export default function ActivationClient({ event }: { event: Event }) {
         </div>
       </div>
 
-      {/* FOOTER NAV: Zawsze na dole */}
       <div className="w-full max-w-xl mt-6 flex justify-between items-center shrink-0">
-        <button
-          onClick={() => setCurrentStep(s => Math.max(0, s - 1))}
-          className={`text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors px-4 py-2 ${currentStep === 0 ? "invisible" : "visible"}`}
-        >
-          {ui.back}
-        </button>
-
-        <button
-          disabled={!canGoNext()}
-          onClick={() => {
-            if (!canGoNext()) return;
-            const isLast = currentStep === steps.length - 1;
-            if (isLast) {
-              alert(lang === "pl" ? "Dziękujemy!" : "Thank you!");
-              setCurrentStep(0);
-            } else {
-              setCurrentStep(s => s + 1);
-            }
-          }}
-          className="group relative px-10 py-4 rounded-2xl bg-slate-900 hover:bg-black text-white font-bold transition-all shadow-xl shadow-slate-200 disabled:opacity-20 active:scale-95"
-        >
+        <button onClick={() => setCurrentStep(s => Math.max(0, s - 1))} className={`text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors px-4 py-2 ${currentStep === 0 ? "invisible" : "visible"}`}>{ui.back}</button>
+        <button disabled={!canGoNext()} onClick={() => {
+          if (!canGoNext()) return;
+          if (currentStep === steps.length - 1) {
+            alert(lang === "pl" ? "Dziękujemy!" : "Thank you!");
+            setCurrentStep(0);
+            setAnswers({ form: EMPTY_FORM });
+            setMode("idle");
+          } else {
+            setCurrentStep(s => s + 1);
+          }
+        }} className="group relative px-10 py-2 rounded-2xl bg-slate-900 hover:bg-black text-white font-bold transition-all shadow-xl shadow-slate-200 disabled:opacity-20 active:scale-95">
           <span className="flex items-center gap-2">
             {currentStep === steps.length - 1 ? ui.finish : ui.next}
-            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7-7 7" />
-            </svg>
+            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7-7 7" /></svg>
           </span>
         </button>
       </div>

@@ -76,7 +76,7 @@ export async function POST(
 
     let index = 0;
 
-    while (form.get(`options[${index}][value]`)) {
+    while (form.has(`options[${index}][value]`)) {
       const value = form.get(`options[${index}][value]`) as string;
       const labelPl = form.get(
         `options[${index}][label][pl]`

@@ -101,13 +101,9 @@ export default function FormStep({
             international
             defaultCountry="PL"
             placeholder={t.phone}
-            // Ważne: przekazujemy tylko JEDNĄ wartość
-            value={value.phone}
+            value={value.phone ? value.phone.replace(/\s+/g, '') : ''}
             onChange={(val) => {
-              // val będzie zawierać pełny numer (np. +48123456789)
               update("phone", val || "");
-              // Jeśli Twoja baza WYMAGA phoneCode osobno, musisz go wyciąć,
-              // ale dla formularza lepiej trzymać to w jednym polu "phone"
             }}
             className="flex gap-2"
             numberInputProps={{

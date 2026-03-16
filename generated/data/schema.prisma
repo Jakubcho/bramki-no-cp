@@ -4,6 +4,61 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL_ACTIVATION")
+  provider = "postgresql"
+  url      = env("DATABASE_URL_LANIAKEA")
+}
+
+model StatsEntry {
+  id        String @id
+  eventSlug String
+
+  entryId String
+  formId  Int?
+
+  email    String?
+  phone    String?
+  fullName String?
+  company  String?
+
+  qrCode    String?
+  qrCodeUrl String?
+
+  sourceUrl String?
+  status    String?
+
+  userAgent String?
+  os        String?
+
+  /**
+   * ==========================
+   * AKTYWACJA (STAŁE POLA)
+   * ==========================
+   */
+
+  firstNameActivation String?
+  lastNameActivation  String?
+  emailActivation     String?
+  phoneActivation     String?
+
+  streetActivation     String?
+  buildingActivation   String?
+  postalCodeActivation String?
+  cityActivation       String?
+  countryActivation    String?
+
+  /**
+   * ==========================
+   * DANE DYNAMICZNE
+   * ==========================
+   */
+
+  formData       Json?
+  activationForm Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventSlug, entryId])
+  @@index([eventSlug])
+  @@index([createdAt])
 }

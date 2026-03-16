@@ -93,9 +93,65 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.StatsEntryScalarFieldEnum = {
+  id: 'id',
+  eventSlug: 'eventSlug',
+  entryId: 'entryId',
+  formId: 'formId',
+  email: 'email',
+  phone: 'phone',
+  fullName: 'fullName',
+  company: 'company',
+  qrCode: 'qrCode',
+  qrCodeUrl: 'qrCodeUrl',
+  sourceUrl: 'sourceUrl',
+  status: 'status',
+  userAgent: 'userAgent',
+  os: 'os',
+  firstNameActivation: 'firstNameActivation',
+  lastNameActivation: 'lastNameActivation',
+  emailActivation: 'emailActivation',
+  phoneActivation: 'phoneActivation',
+  streetActivation: 'streetActivation',
+  buildingActivation: 'buildingActivation',
+  postalCodeActivation: 'postalCodeActivation',
+  cityActivation: 'cityActivation',
+  countryActivation: 'countryActivation',
+  formData: 'formData',
+  activationForm: 'activationForm',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-
+  StatsEntry: 'StatsEntry'
 };
 /**
  * Create the Client
@@ -108,7 +164,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/warsawdefencesec/domains/aktywacja.warsawdefencesecurityweek.com/app/generated/data",
+      "value": "/var/www/aktywacja.warsawexpo.eu/app/generated/data",
       "fromEnvVar": null
     },
     "config": {
@@ -117,12 +173,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-1.1.x",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/warsawdefencesec/domains/aktywacja.warsawdefencesecurityweek.com/app/prisma/data.schema.prisma",
+    "sourceFilePath": "/var/www/aktywacja.warsawexpo.eu/app/prisma/data.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -135,23 +191,23 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "mysql",
+  "activeProvider": "postgresql",
   "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": "DATABASE_URL_ACTIVATION",
+        "fromEnvVar": "DATABASE_URL_LANIAKEA",
         "value": null
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/data\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL_ACTIVATION\")\n}\n",
-  "inlineSchemaHash": "559f161f6f3f410c2e86f73ae62af4de9757d790bb8978d97d19034eef70c7fa",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/data\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL_LANIAKEA\")\n}\n\nmodel StatsEntry {\n  id        String @id\n  eventSlug String\n\n  entryId String\n  formId  Int?\n\n  email    String?\n  phone    String?\n  fullName String?\n  company  String?\n\n  qrCode    String?\n  qrCodeUrl String?\n\n  sourceUrl String?\n  status    String?\n\n  userAgent String?\n  os        String?\n\n  /**\n   * ==========================\n   * AKTYWACJA (STAŁE POLA)\n   * ==========================\n   */\n\n  firstNameActivation String?\n  lastNameActivation  String?\n  emailActivation     String?\n  phoneActivation     String?\n\n  streetActivation     String?\n  buildingActivation   String?\n  postalCodeActivation String?\n  cityActivation       String?\n  countryActivation    String?\n\n  /**\n   * ==========================\n   * DANE DYNAMICZNE\n   * ==========================\n   */\n\n  formData       Json?\n  activationForm Json?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([eventSlug, entryId])\n  @@index([eventSlug])\n  @@index([createdAt])\n}\n",
+  "inlineSchemaHash": "cb4366464b6f86e30fa6e5d81c7e3bfce6e1ae4b45b560efb0ffa9b5d81906fb",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"StatsEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventSlug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"formId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"company\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"qrCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"qrCodeUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sourceUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"os\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstNameActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastNameActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"streetActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"buildingActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postalCodeActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cityActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"countryActivation\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"formData\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"activationForm\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
@@ -165,7 +221,7 @@ config.compilerWasm = undefined
 
 config.injectableEdgeEnv = () => ({
   parsed: {
-    DATABASE_URL_ACTIVATION: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL_ACTIVATION'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL_ACTIVATION || undefined
+    DATABASE_URL_LANIAKEA: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL_LANIAKEA'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL_LANIAKEA || undefined
   }
 })
 
