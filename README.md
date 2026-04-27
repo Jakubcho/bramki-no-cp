@@ -61,3 +61,72 @@ INTERNAL_SECRET="klucz_do_api_admina"
 
 # External Integration
 NEXT_PUBLIC_WP_DOMAIN="twoja-domena-wp.pl"
+
+<h2 align="left">📦 Instalacja i Uruchomienie</h2>
+
+<p>Aby poprawnie skonfigurować projekt lokalnie, wykonaj poniższe kroki w swoim terminalu:</p>
+
+<table width="100%">
+  <tr>
+    <td bgcolor="#f6f8fa" style="padding: 15px; border-radius: 10px;">
+      <b>1. Instalacja zależności</b><br/>
+      <code>npm install</code>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#f6f8fa" style="padding: 15px; border-radius: 10px;">
+      <b>2. Generowanie Klientów Prisma</b><br/>
+      <i>Projekt używa dwóch oddzielnych schematów. Należy wygenerować oba:</i><br/>
+      <code>npx prisma generate --schema=./prisma/core.prisma</code><br/>
+      <code>npx prisma generate --schema=./prisma/activation.prisma</code>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#f6f8fa" style="padding: 15px; border-radius: 10px;">
+      <b>3. Uruchomienie serwera deweloperskiego</b><br/>
+      <code>npm run dev</code>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
+<h2 align="left">📋 Główne Endpointy API</h2>
+
+<table width="100%">
+  <thead>
+    <tr bgcolor="#f0f0f0">
+      <th align="left" style="padding: 10px;">Metoda</th>
+      <th align="left" style="padding: 10px;">Endpoint</th>
+      <th align="left" style="padding: 10px;">Opis operacji</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 10px;"><img src="https://img.shields.io/badge/GET-blue?style=flat-square" /></td>
+      <td style="padding: 10px;"><code>/api/gates/[slug]</code></td>
+      <td style="padding: 10px;">Lista biletów zoptymalizowana dla <b>bramek wejściowych</b>.</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px;"><img src="https://img.shields.io/badge/GET-blue?style=flat-square" /></td>
+      <td style="padding: 10px;"><code>/api/qr/[slug]/[qr]</code></td>
+      <td style="padding: 10px;">Weryfikacja kodu QR i pobranie danych uczestnika.</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px;"><img src="https://img.shields.io/badge/POST-orange?style=flat-square" /></td>
+      <td style="padding: 10px;"><code>/api/admin/reconcile-missing-data</code></td>
+      <td style="padding: 10px;"><b>Naprawa danych</b>: uzupełnia brakujące <code>formName</code> z WP.</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px;"><img src="https://img.shields.io/badge/POST-orange?style=flat-square" /></td>
+      <td style="padding: 10px;"><code>/api/sync-catalog/[id]</code></td>
+      <td style="padding: 10px;">Pełna synchronizacja z zewnętrznym katalogiem WordPress.</td>
+    </tr>
+  </tbody>
+</table>
+
+<br/>
+
+<blockquote style="border-left: 5px solid #0366d6; padding: 10px; background: #f1f8ff; border-radius: 5px;">
+  <b>💡 Porada techniczna:</b> Po każdej zmianie w plikach <code>.prisma</code>, zawsze uruchom ponownie generowanie klientów, aby system widział nowe pola w bazie.
+</blockquote>
