@@ -133,9 +133,33 @@ exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  domain: 'domain',
+  qrPrefixes: 'qrPrefixes',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  externalDirectoryID: 'externalDirectoryID',
+  version: 'version',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  entrances: 'entrances',
+  imageUrl: 'imageUrl',
+  ticketRules: 'ticketRules'
+};
+
+exports.Prisma.UserHostScalarFieldEnum = {
+  id: 'id',
+  fullName: 'fullName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  qrCodeUrl: 'qrCodeUrl'
+};
+
+exports.Prisma.EventPartitionScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  partitionSlug: 'partitionSlug',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.EventTemplateScalarFieldEnum = {
@@ -188,17 +212,35 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.EventWeekScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ShortLinkScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  destination: 'destination',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -233,12 +275,16 @@ exports.StepType = exports.$Enums.StepType = {
 exports.Prisma.ModelName = {
   User: 'User',
   Event: 'Event',
+  UserHost: 'UserHost',
+  EventPartition: 'EventPartition',
   EventTemplate: 'EventTemplate',
   Step: 'Step',
   StepTranslation: 'StepTranslation',
   Option: 'Option',
   OptionTranslation: 'OptionTranslation',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  EventWeek: 'EventWeek',
+  ShortLink: 'ShortLink'
 };
 
 /**

@@ -98,6 +98,10 @@ exports.Prisma.ActivationEntryScalarFieldEnum = {
   slug: 'slug',
   entryId: 'entryId',
   qrCode: 'qrCode',
+  formId: 'formId',
+  formName: 'formName',
+  ticketType: 'ticketType',
+  manualOverride: 'manualOverride',
   email: 'email',
   phone: 'phone',
   fullName: 'fullName',
@@ -107,10 +111,36 @@ exports.Prisma.ActivationEntryScalarFieldEnum = {
   postalCode: 'postalCode',
   city: 'city',
   country: 'country',
+  isActivated: 'isActivated',
+  activatedAt: 'activatedAt',
+  actFirstName: 'actFirstName',
+  actLastName: 'actLastName',
+  actEmail: 'actEmail',
+  actPhone: 'actPhone',
+  actStreet: 'actStreet',
+  actHouseNumber: 'actHouseNumber',
+  actCity: 'actCity',
+  actPostalCode: 'actPostalCode',
+  actCountry: 'actCountry',
+  answers: 'answers',
+  dataCenter: 'dataCenter',
   domain: 'domain',
   badge: 'badge',
   fairYear: 'fairYear',
   fairDate: 'fairDate',
+  createdAt: 'createdAt',
+  accessLog: 'accessLog'
+};
+
+exports.Prisma.ApiErrorScalarFieldEnum = {
+  id: 'id',
+  endpoint: 'endpoint',
+  method: 'method',
+  message: 'message',
+  stack: 'stack',
+  payload: 'payload',
+  response: 'response',
+  status: 'status',
   createdAt: 'createdAt'
 };
 
@@ -119,9 +149,20 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {
@@ -131,7 +172,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  ActivationEntry: 'ActivationEntry'
+  ActivationEntry: 'ActivationEntry',
+  ApiError: 'ApiError'
 };
 /**
  * Create the Client
@@ -180,13 +222,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/activation\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL_ACTIVATION\")\n}\n\nmodel ActivationEntry {\n  id      String  @id @default(cuid())\n  slug    String\n  entryId String\n  qrCode  String?\n\n  email           String?\n  phone           String?\n  fullName        String?\n  streetAddress   String?\n  houseNumber     String?\n  apartmentNumber String?\n  postalCode      String?\n  city            String?\n  country         String?\n\n  domain   String?\n  badge    String?\n  fairYear String?\n  fairDate String?\n\n  createdAt DateTime @default(now())\n\n  @@unique([slug, entryId])\n  @@index([slug])\n}\n",
-  "inlineSchemaHash": "ad871b73889217839e454c450c666b923ce1e9c2a11d80a350eb2e29fa24bcac",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/activation\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL_ACTIVATION\")\n}\n\nmodel ActivationEntry {\n  // W przypadku partycjonowania klucz główny musi zawierać kolumnę partycji (slug)\n  id             String  @default(cuid())\n  slug           String\n  entryId        String\n  qrCode         String?\n  formId         Int?\n  formName       String?\n  ticketType     String?\n  manualOverride Boolean @default(false)\n\n  // --- DANE ORYGINALNE (Z IMPORTU) ---\n  email           String?\n  phone           String?\n  fullName        String?\n  streetAddress   String?\n  houseNumber     String?\n  apartmentNumber String?\n  postalCode      String?\n  city            String?\n  country         String?\n\n  // --- DANE PO AKTYWACJI (WPISANE NA TABLECIE) ---\n  isActivated Boolean   @default(false)\n  activatedAt DateTime?\n\n  actFirstName   String?\n  actLastName    String?\n  actEmail       String?\n  actPhone       String?\n  actStreet      String?\n  actHouseNumber String?\n  actCity        String?\n  actPostalCode  String?\n  actCountry     String?\n\n  // Odpowiedzi z ankiety (kroki SINGLE/MULTI CHOICE)\n  answers Json?\n\n  // --- DODATKOWE METADANE ---\n  dataCenter String?  @default(\"none\")\n  domain     String?\n  badge      String?\n  fairYear   String?\n  fairDate   String?\n  createdAt  DateTime @default(now())\n  accessLog  Json?    @default(\"[]\")\n\n  // KLUCZOWE DLA PARTYCJONOWANIA:\n  // Klucz główny (PK) musi zawierać kolumnę 'slug'\n  @@id([id, slug])\n  // Unikalność pary slug + entryId dla sprawnego upsertu\n  @@unique([slug, entryId])\n  // Indeksy dla wydajności wyszukiwania\n  @@index([slug])\n  @@index([qrCode])\n  @@index([isActivated])\n}\n\nmodel ApiError {\n  id        String   @id @default(cuid())\n  endpoint  String // np. /api/activate, /api/admin/reconcile\n  method    String // POST, GET\n  message   String // Treść błędu\n  stack     String? // Stack trace (opcjonalnie)\n  payload   Json? // Co wysyłaliśmy, gdy wystąpił błąd\n  response  Json? // Co odpowiedział serwer (jeśli odpowiedział)\n  status    Int? // Kod HTTP (np. 500, 404, 401)\n  createdAt DateTime @default(now())\n\n  @@index([createdAt])\n  @@index([endpoint])\n}\n",
+  "inlineSchemaHash": "5d2e5a67b070925e0bbaf5ca7079a29d11e96e6fe6d3df850146d9c7785dd48b",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"ActivationEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"qrCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"streetAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"houseNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"apartmentNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postalCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"domain\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"badge\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fairYear\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fairDate\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"ActivationEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"qrCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"formId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"formName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ticketType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"manualOverride\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"streetAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"houseNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"apartmentNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postalCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActivated\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"activatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"actFirstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actLastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actPhone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actStreet\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actHouseNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actCity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actPostalCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"actCountry\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"answers\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"dataCenter\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"domain\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"badge\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fairYear\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fairDate\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accessLog\",\"kind\":\"scalar\",\"type\":\"Json\"}],\"dbName\":null},\"ApiError\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"endpoint\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stack\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payload\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"response\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

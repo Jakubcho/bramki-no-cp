@@ -25,7 +25,6 @@ export default function LogsPage() {
         if (!res.ok) throw new Error(`Błąd serwera: ${res.status}`);
         const data = await res.json();
 
-        // Zabezpieczenie: upewniamy się, że data to tablica
         setLogs(Array.isArray(data) ? data : []);
       } catch (err: any) {
         setError(err.message);
@@ -130,7 +129,6 @@ export default function LogsPage() {
 function LogModal({ log }: { log: AuditLog }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Funkcja interpretująca co się zmieniło (inteligentny opis)
   const renderSummary = () => {
     const meta = log.meta;
     if (!meta) return "Brak szczegółów w meta-danych.";

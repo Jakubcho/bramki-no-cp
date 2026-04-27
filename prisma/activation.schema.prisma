@@ -9,28 +9,77 @@ datasource db {
 }
 
 model ActivationEntry {
-  id               String   @id @default(cuid())
-  slug             String
-  entryId          String
-  qrCode           String?
+  // W przypadku partycjonowania klucz główny musi zawierać kolumnę partycji (slug)
+  id              String    @default(cuid())
+  slug            String
+  entryId         String
+  qrCode          String?
+  formId          Int?
+  formName        String?
+  ticketType      String?
+  manualOverride  Boolean   @default(false)
 
-  email            String?
-  phone            String?
-  fullName         String?
-  streetAddress    String?
-  houseNumber      String?
-  apartmentNumber  String?
-  postalCode       String?
-  city             String?
-  country          String?
+  // --- DANE ORYGINALNE (Z IMPORTU) ---
+  email           String?
+  phone           String?
+  fullName        String?
+  streetAddress   String?
+  houseNumber     String?
+  apartmentNumber String?
+  postalCode      String?
+  city            String?
+  country         String?
 
-  domain           String?
-  badge            String?
-  fairYear         String?
-  fairDate         String?
+  // --- DANE PO AKTYWACJI (WPISANE NA TABLECIE) ---
+  isActivated     Boolean   @default(false)
+  activatedAt     DateTime?
 
-  createdAt        DateTime @default(now())
+  actFirstName    String?
+  actLastName     String?
+  actEmail        String?
+  actPhone        String?
+  actStreet       String?
+  actHouseNumber  String?
+  actCity         String?
+  actPostalCode   String?
+  actCountry      String?
 
+  // Odpowiedzi z ankiety (kroki SINGLE/MULTI CHOICE)
+  answers         Json?
+
+  // --- DODATKOWE METADANE ---
+  dataCenter    String?   @default("none")
+  domain          String?
+  badge           String?
+  fairYear        String?
+  fairDate        String?
+  createdAt       DateTime  @default(now())
+  accessLog Json? @default("[]")
+
+  // KLUCZOWE DLA PARTYCJONOWANIA:
+  // Klucz główny (PK) musi zawierać kolumnę 'slug'
+  @@id([id, slug])
+
+  // Unikalność pary slug + entryId dla sprawnego upsertu
   @@unique([slug, entryId])
+
+  // Indeksy dla wydajności wyszukiwania
   @@index([slug])
+  @@index([qrCode])
+  @@index([isActivated])
+}
+
+model ApiError {
+  id        String   @id @default(cuid())
+  endpoint  String   // np. /api/activate, /api/admin/reconcile
+  method    String   // POST, GET
+  message   String   // Treść błędu
+  stack     String?  // Stack trace (opcjonalnie)
+  payload   Json?    // Co wysyłaliśmy, gdy wystąpił błąd
+  response  Json?    // Co odpowiedział serwer (jeśli odpowiedział)
+  status    Int?     // Kod HTTP (np. 500, 404, 401)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([endpoint])
 }

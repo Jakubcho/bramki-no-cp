@@ -105,9 +105,33 @@ exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  domain: 'domain',
+  qrPrefixes: 'qrPrefixes',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  externalDirectoryID: 'externalDirectoryID',
+  version: 'version',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  entrances: 'entrances',
+  imageUrl: 'imageUrl',
+  ticketRules: 'ticketRules'
+};
+
+exports.Prisma.UserHostScalarFieldEnum = {
+  id: 'id',
+  fullName: 'fullName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  qrCodeUrl: 'qrCodeUrl'
+};
+
+exports.Prisma.EventPartitionScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  partitionSlug: 'partitionSlug',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.EventTemplateScalarFieldEnum = {
@@ -160,17 +184,35 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.EventWeekScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ShortLinkScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  destination: 'destination',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -205,12 +247,16 @@ exports.StepType = exports.$Enums.StepType = {
 exports.Prisma.ModelName = {
   User: 'User',
   Event: 'Event',
+  UserHost: 'UserHost',
+  EventPartition: 'EventPartition',
   EventTemplate: 'EventTemplate',
   Step: 'Step',
   StepTranslation: 'StepTranslation',
   Option: 'Option',
   OptionTranslation: 'OptionTranslation',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  EventWeek: 'EventWeek',
+  ShortLink: 'ShortLink'
 };
 /**
  * Create the Client
@@ -259,13 +305,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/core\"\n}\n\ndatasource db {\n  provider          = \"postgresql\"\n  url               = env(\"DATABASE_URL_CONFIG\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  email     String   @unique\n  password  String\n  role      Role     @default(EDITOR)\n  createdAt DateTime @default(now())\n}\n\nmodel Event {\n  id        String   @id @default(cuid())\n  name      String\n  slug      String   @unique\n  isActive  Boolean  @default(true)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  steps     Step[]\n}\n\nmodel EventTemplate {\n  id        String   @id @default(cuid())\n  name      String\n  structure Json\n  createdAt DateTime @default(now())\n}\n\nmodel Step {\n  id           String            @id @default(cuid())\n  eventId      String\n  order        Int\n  type         StepType\n  createdAt    DateTime          @default(now())\n  options      Option[]\n  event        Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)\n  translations StepTranslation[]\n}\n\nmodel StepTranslation {\n  id     String @id @default(cuid())\n  stepId String\n  locale String\n  title  String\n  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)\n\n  @@unique([stepId, locale])\n}\n\nmodel Option {\n  id           String              @id @default(cuid())\n  stepId       String\n  value        String\n  iconUrl      String?\n  order        Int\n  createdAt    DateTime            @default(now())\n  step         Step                @relation(fields: [stepId], references: [id], onDelete: Cascade)\n  translations OptionTranslation[]\n}\n\nmodel OptionTranslation {\n  id       String @id @default(cuid())\n  optionId String\n  locale   String\n  label    String\n  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)\n\n  @@unique([optionId, locale])\n}\n\nmodel AuditLog {\n  id        String   @id @default(cuid())\n  userId    String?\n  userEmail String?\n  userRole  String?\n  action    String\n  entity    String\n  entityId  String?\n  meta      Json?\n  createdAt DateTime @default(now())\n\n  @@index([entity])\n  @@index([entityId])\n  @@index([createdAt])\n}\n\nenum Role {\n  ADMIN\n  EDITOR\n}\n\nenum StepType {\n  SINGLE_CHOICE\n  MULTI_CHOICE\n  MULTI_CHOICE_ICON\n  FORM\n  CONSENT\n}\n",
-  "inlineSchemaHash": "541692748f0d8a282f557913465f3f1af40f565b2671d042fe1539b158079721",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/core\"\n}\n\ndatasource db {\n  provider          = \"postgresql\"\n  url               = env(\"DATABASE_URL_CONFIG\")\n  shadowDatabaseUrl = env(\"SHADOW_DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  email     String   @unique\n  password  String\n  role      Role     @default(EDITOR)\n  createdAt DateTime @default(now())\n}\n\nmodel Event {\n  id         String   @id @default(cuid())\n  name       String\n  slug       String   @unique\n  domain     String?\n  qrPrefixes String[]\n  isActive   Boolean  @default(true)\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  externalDirectoryID Int?\n\n  version Int @default(1)\n\n  startDate DateTime?\n  endDate   DateTime?\n  entrances String[]\n  imageUrl  String?\n\n  steps Step[]\n\n  ticketRules Json? @default(\"{}\")\n\n  partitions EventPartition[]\n  weeks      EventWeek[]      @relation(\"EventWeekEvents\")\n}\n\nmodel UserHost {\n  id        String   @id @default(cuid())\n  fullName  String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  qrCodeUrl String?\n\n  @@index([fullName])\n}\n\nmodel EventPartition {\n  id String @id @default(cuid())\n\n  eventId String\n  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)\n\n  partitionSlug String\n\n  createdAt DateTime @default(now())\n\n  @@unique([eventId, partitionSlug])\n}\n\nmodel EventTemplate {\n  id        String   @id @default(cuid())\n  name      String\n  structure Json\n  createdAt DateTime @default(now())\n}\n\nmodel Step {\n  id           String            @id @default(cuid())\n  eventId      String\n  order        Int\n  type         StepType\n  createdAt    DateTime          @default(now())\n  options      Option[]\n  event        Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)\n  translations StepTranslation[]\n}\n\nmodel StepTranslation {\n  id     String @id @default(cuid())\n  stepId String\n  locale String\n  title  String\n  step   Step   @relation(fields: [stepId], references: [id], onDelete: Cascade)\n\n  @@unique([stepId, locale])\n}\n\nmodel Option {\n  id           String              @id @default(cuid())\n  stepId       String\n  value        String\n  iconUrl      String?\n  order        Int\n  createdAt    DateTime            @default(now())\n  step         Step                @relation(fields: [stepId], references: [id], onDelete: Cascade)\n  translations OptionTranslation[]\n}\n\nmodel OptionTranslation {\n  id       String @id @default(cuid())\n  optionId String\n  locale   String\n  label    String\n  option   Option @relation(fields: [optionId], references: [id], onDelete: Cascade)\n\n  @@unique([optionId, locale])\n}\n\nmodel AuditLog {\n  id        String   @id @default(cuid())\n  userId    String?\n  userEmail String?\n  userRole  String?\n  action    String\n  entity    String\n  entityId  String?\n  meta      Json?\n  createdAt DateTime @default(now())\n\n  @@index([entity])\n  @@index([entityId])\n  @@index([createdAt])\n}\n\nmodel EventWeek {\n  id       String  @id @default(cuid())\n  name     String\n  slug     String  @unique\n  isActive Boolean @default(true)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  events Event[] @relation(\"EventWeekEvents\")\n}\n\nmodel ShortLink {\n  id          String   @id @default(cuid())\n  code        String   @unique // np. \"ad\"\n  destination String // np. \"/aktywacja/warsawpack_2026\"\n  description String? // Notatka dla Ciebie, np. \"Kioski wejście A\"\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n}\n\nenum Role {\n  ADMIN\n  EDITOR\n}\n\nenum StepType {\n  SINGLE_CHOICE\n  MULTI_CHOICE\n  MULTI_CHOICE_ICON\n  FORM\n  CONSENT\n}\n",
+  "inlineSchemaHash": "4338dd26e2967746870f3319adcb57e99fac3a879c3cadc177619cac9f340d0d",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Event\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"steps\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"EventToStep\"}],\"dbName\":null},\"EventTemplate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"structure\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Step\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"StepType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"options\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToStep\"},{\"name\":\"event\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"EventToStep\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"StepTranslation\",\"relationName\":\"StepToStepTranslation\"}],\"dbName\":null},\"StepTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"StepToStepTranslation\"}],\"dbName\":null},\"Option\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"iconUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"OptionToStep\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"OptionTranslation\",\"relationName\":\"OptionToOptionTranslation\"}],\"dbName\":null},\"OptionTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"optionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"option\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToOptionTranslation\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userRole\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"meta\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Event\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"domain\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"qrPrefixes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"externalDirectoryID\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"version\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"entrances\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"steps\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"EventToStep\"},{\"name\":\"ticketRules\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"partitions\",\"kind\":\"object\",\"type\":\"EventPartition\",\"relationName\":\"EventToEventPartition\"},{\"name\":\"weeks\",\"kind\":\"object\",\"type\":\"EventWeek\",\"relationName\":\"EventWeekEvents\"}],\"dbName\":null},\"UserHost\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"qrCodeUrl\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"EventPartition\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"EventToEventPartition\"},{\"name\":\"partitionSlug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"EventTemplate\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"structure\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Step\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"StepType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"options\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToStep\"},{\"name\":\"event\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"EventToStep\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"StepTranslation\",\"relationName\":\"StepToStepTranslation\"}],\"dbName\":null},\"StepTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"StepToStepTranslation\"}],\"dbName\":null},\"Option\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stepId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"iconUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"step\",\"kind\":\"object\",\"type\":\"Step\",\"relationName\":\"OptionToStep\"},{\"name\":\"translations\",\"kind\":\"object\",\"type\":\"OptionTranslation\",\"relationName\":\"OptionToOptionTranslation\"}],\"dbName\":null},\"OptionTranslation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"optionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locale\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"option\",\"kind\":\"object\",\"type\":\"Option\",\"relationName\":\"OptionToOptionTranslation\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userRole\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"meta\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"EventWeek\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"events\",\"kind\":\"object\",\"type\":\"Event\",\"relationName\":\"EventWeekEvents\"}],\"dbName\":null},\"ShortLink\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"destination\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

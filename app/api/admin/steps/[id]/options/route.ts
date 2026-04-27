@@ -3,15 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { logApiError } from "@/lib/logger";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: stepId } = await params;
+  const session = await getServerSession(authOptions);
+  let bodyData = {};
+
   try {
-    const { id: stepId } = await params;
     const body = await req.json();
-    const session = await getServerSession(authOptions);
+    bodyData = body;
 
     const count = await prismaCore.option.count({
       where: { stepId },
@@ -26,7 +30,7 @@ export async function POST(
 
     if (!translationsArray.length) {
       return NextResponse.json(
-        { error: "Brak tłumaczeń" },
+        { error: "Translations are required" },
         { status: 400 }
       );
     }
@@ -58,6 +62,14 @@ export async function POST(
 
     return NextResponse.json(option);
   } catch (error: any) {
+    await logApiError({
+      endpoint: `/api/admin/steps/${stepId}/options`,
+      method: "POST_CREATE",
+      message: `Failed to create option: ${error.message}`,
+      payload: { ...bodyData, stepId, userId: session?.user?.id },
+      status: 500
+    });
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

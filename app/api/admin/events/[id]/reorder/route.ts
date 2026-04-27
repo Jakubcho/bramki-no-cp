@@ -1,6 +1,7 @@
 import { prismaCore } from "@/lib/prisma-core";
 import { NextRequest, NextResponse } from "next/server";
 import { logAction } from "@/lib/audit";
+import { logApiError } from "@/lib/logger";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -8,9 +9,13 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let bodyData = null;
+  const session = await getServerSession(authOptions);
+
   try {
-    const { updates } = await req.json();
-    const session = await getServerSession(authOptions);
+    const body = await req.json();
+    bodyData = body;
+    const { updates } = body;
 
     const transition = await prismaCore.$transaction(
       updates.map((u: { id: string, order: number }) =>
@@ -32,6 +37,14 @@ export async function PATCH(
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {
+    await logApiError({
+      endpoint: "/api/admin/steps/reorder",
+      method: "PATCH_TRANSACTION",
+      message: `Reordering steps failed: ${error.message}`,
+      payload: { updates: bodyData?.updates, userId: session?.user?.id },
+      status: 500
+    });
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

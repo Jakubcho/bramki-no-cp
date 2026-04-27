@@ -21,11 +21,49 @@ model Event {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
+  domain    String?
+  qrPrefixes String[]
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  externalDirectoryID Int?
+
+  version     Int      @default(1)
+
+  startDate   DateTime?
+  endDate     DateTime?
+  entrances   String[]
+  imageUrl  String?
+
   steps     Step[]
+
+  ticketRules     Json?     @default("{}")
+
+  partitions EventPartition[]
+  weeks     EventWeek[] @relation("EventWeekEvents")
 }
+  model UserHost {
+    id        String   @id @default(cuid())
+    fullName String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    qrCodeUrl   String?
+
+    @@index([fullName])
+  }
+  model EventPartition {
+    id            String   @id @default(cuid())
+
+    eventId       String
+    event         Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+    partitionSlug String
+
+    createdAt     DateTime @default(now())
+
+    @@unique([eventId, partitionSlug])
+  }
 
 model EventTemplate {
   id        String   @id @default(cuid())
@@ -91,6 +129,28 @@ model AuditLog {
   @@index([entityId])
   @@index([createdAt])
 }
+
+model EventWeek {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events    Event[]  @relation("EventWeekEvents")
+}
+
+model ShortLink {
+  id          String   @id @default(cuid())
+  code        String   @unique // np. "ad"
+  destination String   // np. "/aktywacja/warsawpack_2026"
+  description String?  // Notatka dla Ciebie, np. "Kioski wejście A"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 
 enum Role {
   ADMIN

@@ -126,6 +126,10 @@ exports.Prisma.ActivationEntryScalarFieldEnum = {
   slug: 'slug',
   entryId: 'entryId',
   qrCode: 'qrCode',
+  formId: 'formId',
+  formName: 'formName',
+  ticketType: 'ticketType',
+  manualOverride: 'manualOverride',
   email: 'email',
   phone: 'phone',
   fullName: 'fullName',
@@ -135,10 +139,36 @@ exports.Prisma.ActivationEntryScalarFieldEnum = {
   postalCode: 'postalCode',
   city: 'city',
   country: 'country',
+  isActivated: 'isActivated',
+  activatedAt: 'activatedAt',
+  actFirstName: 'actFirstName',
+  actLastName: 'actLastName',
+  actEmail: 'actEmail',
+  actPhone: 'actPhone',
+  actStreet: 'actStreet',
+  actHouseNumber: 'actHouseNumber',
+  actCity: 'actCity',
+  actPostalCode: 'actPostalCode',
+  actCountry: 'actCountry',
+  answers: 'answers',
+  dataCenter: 'dataCenter',
   domain: 'domain',
   badge: 'badge',
   fairYear: 'fairYear',
   fairDate: 'fairDate',
+  createdAt: 'createdAt',
+  accessLog: 'accessLog'
+};
+
+exports.Prisma.ApiErrorScalarFieldEnum = {
+  id: 'id',
+  endpoint: 'endpoint',
+  method: 'method',
+  message: 'message',
+  stack: 'stack',
+  payload: 'payload',
+  response: 'response',
+  status: 'status',
   createdAt: 'createdAt'
 };
 
@@ -147,9 +177,20 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {
@@ -159,7 +200,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  ActivationEntry: 'ActivationEntry'
+  ActivationEntry: 'ActivationEntry',
+  ApiError: 'ApiError'
 };
 
 /**

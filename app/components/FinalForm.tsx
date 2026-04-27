@@ -1,6 +1,5 @@
 "use client";
 
-// Definiujemy, co komponent może przyjąć
 interface FinalFormProps {
   eventId: string;
   code: string;

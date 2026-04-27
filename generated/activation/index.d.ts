@@ -18,6 +18,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  * 
  */
 export type ActivationEntry = $Result.DefaultSelection<Prisma.$ActivationEntryPayload>
+/**
+ * Model ApiError
+ * 
+ */
+export type ApiError = $Result.DefaultSelection<Prisma.$ApiErrorPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -146,6 +151,16 @@ export class PrismaClient<
     * ```
     */
   get activationEntry(): Prisma.ActivationEntryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.apiError`: Exposes CRUD operations for the **ApiError** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApiErrors
+    * const apiErrors = await prisma.apiError.findMany()
+    * ```
+    */
+  get apiError(): Prisma.ApiErrorDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -587,7 +602,8 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    ActivationEntry: 'ActivationEntry'
+    ActivationEntry: 'ActivationEntry',
+    ApiError: 'ApiError'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -606,7 +622,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "activationEntry"
+      modelProps: "activationEntry" | "apiError"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -681,6 +697,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ActivationEntryCountArgs<ExtArgs>
             result: $Utils.Optional<ActivationEntryCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApiError: {
+        payload: Prisma.$ApiErrorPayload<ExtArgs>
+        fields: Prisma.ApiErrorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApiErrorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApiErrorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>
+          }
+          findFirst: {
+            args: Prisma.ApiErrorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApiErrorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>
+          }
+          findMany: {
+            args: Prisma.ApiErrorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>[]
+          }
+          create: {
+            args: Prisma.ApiErrorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>
+          }
+          createMany: {
+            args: Prisma.ApiErrorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApiErrorCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>[]
+          }
+          delete: {
+            args: Prisma.ApiErrorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>
+          }
+          update: {
+            args: Prisma.ApiErrorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApiErrorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApiErrorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApiErrorUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApiErrorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiErrorPayload>
+          }
+          aggregate: {
+            args: Prisma.ApiErrorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApiError>
+          }
+          groupBy: {
+            args: Prisma.ApiErrorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApiErrorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApiErrorCountArgs<ExtArgs>
+            result: $Utils.Optional<ApiErrorCountAggregateOutputType> | number
           }
         }
       }
@@ -781,6 +871,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     activationEntry?: ActivationEntryOmit
+    apiError?: ApiErrorOmit
   }
 
   /* Types for Logging */
@@ -867,8 +958,18 @@ export namespace Prisma {
 
   export type AggregateActivationEntry = {
     _count: ActivationEntryCountAggregateOutputType | null
+    _avg: ActivationEntryAvgAggregateOutputType | null
+    _sum: ActivationEntrySumAggregateOutputType | null
     _min: ActivationEntryMinAggregateOutputType | null
     _max: ActivationEntryMaxAggregateOutputType | null
+  }
+
+  export type ActivationEntryAvgAggregateOutputType = {
+    formId: number | null
+  }
+
+  export type ActivationEntrySumAggregateOutputType = {
+    formId: number | null
   }
 
   export type ActivationEntryMinAggregateOutputType = {
@@ -876,6 +977,10 @@ export namespace Prisma {
     slug: string | null
     entryId: string | null
     qrCode: string | null
+    formId: number | null
+    formName: string | null
+    ticketType: string | null
+    manualOverride: boolean | null
     email: string | null
     phone: string | null
     fullName: string | null
@@ -885,6 +990,18 @@ export namespace Prisma {
     postalCode: string | null
     city: string | null
     country: string | null
+    isActivated: boolean | null
+    activatedAt: Date | null
+    actFirstName: string | null
+    actLastName: string | null
+    actEmail: string | null
+    actPhone: string | null
+    actStreet: string | null
+    actHouseNumber: string | null
+    actCity: string | null
+    actPostalCode: string | null
+    actCountry: string | null
+    dataCenter: string | null
     domain: string | null
     badge: string | null
     fairYear: string | null
@@ -897,6 +1014,10 @@ export namespace Prisma {
     slug: string | null
     entryId: string | null
     qrCode: string | null
+    formId: number | null
+    formName: string | null
+    ticketType: string | null
+    manualOverride: boolean | null
     email: string | null
     phone: string | null
     fullName: string | null
@@ -906,6 +1027,18 @@ export namespace Prisma {
     postalCode: string | null
     city: string | null
     country: string | null
+    isActivated: boolean | null
+    activatedAt: Date | null
+    actFirstName: string | null
+    actLastName: string | null
+    actEmail: string | null
+    actPhone: string | null
+    actStreet: string | null
+    actHouseNumber: string | null
+    actCity: string | null
+    actPostalCode: string | null
+    actCountry: string | null
+    dataCenter: string | null
     domain: string | null
     badge: string | null
     fairYear: string | null
@@ -918,6 +1051,10 @@ export namespace Prisma {
     slug: number
     entryId: number
     qrCode: number
+    formId: number
+    formName: number
+    ticketType: number
+    manualOverride: number
     email: number
     phone: number
     fullName: number
@@ -927,20 +1064,46 @@ export namespace Prisma {
     postalCode: number
     city: number
     country: number
+    isActivated: number
+    activatedAt: number
+    actFirstName: number
+    actLastName: number
+    actEmail: number
+    actPhone: number
+    actStreet: number
+    actHouseNumber: number
+    actCity: number
+    actPostalCode: number
+    actCountry: number
+    answers: number
+    dataCenter: number
     domain: number
     badge: number
     fairYear: number
     fairDate: number
     createdAt: number
+    accessLog: number
     _all: number
   }
 
+
+  export type ActivationEntryAvgAggregateInputType = {
+    formId?: true
+  }
+
+  export type ActivationEntrySumAggregateInputType = {
+    formId?: true
+  }
 
   export type ActivationEntryMinAggregateInputType = {
     id?: true
     slug?: true
     entryId?: true
     qrCode?: true
+    formId?: true
+    formName?: true
+    ticketType?: true
+    manualOverride?: true
     email?: true
     phone?: true
     fullName?: true
@@ -950,6 +1113,18 @@ export namespace Prisma {
     postalCode?: true
     city?: true
     country?: true
+    isActivated?: true
+    activatedAt?: true
+    actFirstName?: true
+    actLastName?: true
+    actEmail?: true
+    actPhone?: true
+    actStreet?: true
+    actHouseNumber?: true
+    actCity?: true
+    actPostalCode?: true
+    actCountry?: true
+    dataCenter?: true
     domain?: true
     badge?: true
     fairYear?: true
@@ -962,6 +1137,10 @@ export namespace Prisma {
     slug?: true
     entryId?: true
     qrCode?: true
+    formId?: true
+    formName?: true
+    ticketType?: true
+    manualOverride?: true
     email?: true
     phone?: true
     fullName?: true
@@ -971,6 +1150,18 @@ export namespace Prisma {
     postalCode?: true
     city?: true
     country?: true
+    isActivated?: true
+    activatedAt?: true
+    actFirstName?: true
+    actLastName?: true
+    actEmail?: true
+    actPhone?: true
+    actStreet?: true
+    actHouseNumber?: true
+    actCity?: true
+    actPostalCode?: true
+    actCountry?: true
+    dataCenter?: true
     domain?: true
     badge?: true
     fairYear?: true
@@ -983,6 +1174,10 @@ export namespace Prisma {
     slug?: true
     entryId?: true
     qrCode?: true
+    formId?: true
+    formName?: true
+    ticketType?: true
+    manualOverride?: true
     email?: true
     phone?: true
     fullName?: true
@@ -992,11 +1187,25 @@ export namespace Prisma {
     postalCode?: true
     city?: true
     country?: true
+    isActivated?: true
+    activatedAt?: true
+    actFirstName?: true
+    actLastName?: true
+    actEmail?: true
+    actPhone?: true
+    actStreet?: true
+    actHouseNumber?: true
+    actCity?: true
+    actPostalCode?: true
+    actCountry?: true
+    answers?: true
+    dataCenter?: true
     domain?: true
     badge?: true
     fairYear?: true
     fairDate?: true
     createdAt?: true
+    accessLog?: true
     _all?: true
   }
 
@@ -1038,6 +1247,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ActivationEntryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ActivationEntrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ActivationEntryMinAggregateInputType
@@ -1068,6 +1289,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ActivationEntryCountAggregateInputType | true
+    _avg?: ActivationEntryAvgAggregateInputType
+    _sum?: ActivationEntrySumAggregateInputType
     _min?: ActivationEntryMinAggregateInputType
     _max?: ActivationEntryMaxAggregateInputType
   }
@@ -1077,6 +1300,10 @@ export namespace Prisma {
     slug: string
     entryId: string
     qrCode: string | null
+    formId: number | null
+    formName: string | null
+    ticketType: string | null
+    manualOverride: boolean
     email: string | null
     phone: string | null
     fullName: string | null
@@ -1086,12 +1313,28 @@ export namespace Prisma {
     postalCode: string | null
     city: string | null
     country: string | null
+    isActivated: boolean
+    activatedAt: Date | null
+    actFirstName: string | null
+    actLastName: string | null
+    actEmail: string | null
+    actPhone: string | null
+    actStreet: string | null
+    actHouseNumber: string | null
+    actCity: string | null
+    actPostalCode: string | null
+    actCountry: string | null
+    answers: JsonValue | null
+    dataCenter: string | null
     domain: string | null
     badge: string | null
     fairYear: string | null
     fairDate: string | null
     createdAt: Date
+    accessLog: JsonValue | null
     _count: ActivationEntryCountAggregateOutputType | null
+    _avg: ActivationEntryAvgAggregateOutputType | null
+    _sum: ActivationEntrySumAggregateOutputType | null
     _min: ActivationEntryMinAggregateOutputType | null
     _max: ActivationEntryMaxAggregateOutputType | null
   }
@@ -1115,6 +1358,10 @@ export namespace Prisma {
     slug?: boolean
     entryId?: boolean
     qrCode?: boolean
+    formId?: boolean
+    formName?: boolean
+    ticketType?: boolean
+    manualOverride?: boolean
     email?: boolean
     phone?: boolean
     fullName?: boolean
@@ -1124,11 +1371,25 @@ export namespace Prisma {
     postalCode?: boolean
     city?: boolean
     country?: boolean
+    isActivated?: boolean
+    activatedAt?: boolean
+    actFirstName?: boolean
+    actLastName?: boolean
+    actEmail?: boolean
+    actPhone?: boolean
+    actStreet?: boolean
+    actHouseNumber?: boolean
+    actCity?: boolean
+    actPostalCode?: boolean
+    actCountry?: boolean
+    answers?: boolean
+    dataCenter?: boolean
     domain?: boolean
     badge?: boolean
     fairYear?: boolean
     fairDate?: boolean
     createdAt?: boolean
+    accessLog?: boolean
   }, ExtArgs["result"]["activationEntry"]>
 
   export type ActivationEntrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1136,6 +1397,10 @@ export namespace Prisma {
     slug?: boolean
     entryId?: boolean
     qrCode?: boolean
+    formId?: boolean
+    formName?: boolean
+    ticketType?: boolean
+    manualOverride?: boolean
     email?: boolean
     phone?: boolean
     fullName?: boolean
@@ -1145,11 +1410,25 @@ export namespace Prisma {
     postalCode?: boolean
     city?: boolean
     country?: boolean
+    isActivated?: boolean
+    activatedAt?: boolean
+    actFirstName?: boolean
+    actLastName?: boolean
+    actEmail?: boolean
+    actPhone?: boolean
+    actStreet?: boolean
+    actHouseNumber?: boolean
+    actCity?: boolean
+    actPostalCode?: boolean
+    actCountry?: boolean
+    answers?: boolean
+    dataCenter?: boolean
     domain?: boolean
     badge?: boolean
     fairYear?: boolean
     fairDate?: boolean
     createdAt?: boolean
+    accessLog?: boolean
   }, ExtArgs["result"]["activationEntry"]>
 
   export type ActivationEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1157,6 +1436,10 @@ export namespace Prisma {
     slug?: boolean
     entryId?: boolean
     qrCode?: boolean
+    formId?: boolean
+    formName?: boolean
+    ticketType?: boolean
+    manualOverride?: boolean
     email?: boolean
     phone?: boolean
     fullName?: boolean
@@ -1166,11 +1449,25 @@ export namespace Prisma {
     postalCode?: boolean
     city?: boolean
     country?: boolean
+    isActivated?: boolean
+    activatedAt?: boolean
+    actFirstName?: boolean
+    actLastName?: boolean
+    actEmail?: boolean
+    actPhone?: boolean
+    actStreet?: boolean
+    actHouseNumber?: boolean
+    actCity?: boolean
+    actPostalCode?: boolean
+    actCountry?: boolean
+    answers?: boolean
+    dataCenter?: boolean
     domain?: boolean
     badge?: boolean
     fairYear?: boolean
     fairDate?: boolean
     createdAt?: boolean
+    accessLog?: boolean
   }, ExtArgs["result"]["activationEntry"]>
 
   export type ActivationEntrySelectScalar = {
@@ -1178,6 +1475,10 @@ export namespace Prisma {
     slug?: boolean
     entryId?: boolean
     qrCode?: boolean
+    formId?: boolean
+    formName?: boolean
+    ticketType?: boolean
+    manualOverride?: boolean
     email?: boolean
     phone?: boolean
     fullName?: boolean
@@ -1187,14 +1488,28 @@ export namespace Prisma {
     postalCode?: boolean
     city?: boolean
     country?: boolean
+    isActivated?: boolean
+    activatedAt?: boolean
+    actFirstName?: boolean
+    actLastName?: boolean
+    actEmail?: boolean
+    actPhone?: boolean
+    actStreet?: boolean
+    actHouseNumber?: boolean
+    actCity?: boolean
+    actPostalCode?: boolean
+    actCountry?: boolean
+    answers?: boolean
+    dataCenter?: boolean
     domain?: boolean
     badge?: boolean
     fairYear?: boolean
     fairDate?: boolean
     createdAt?: boolean
+    accessLog?: boolean
   }
 
-  export type ActivationEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "entryId" | "qrCode" | "email" | "phone" | "fullName" | "streetAddress" | "houseNumber" | "apartmentNumber" | "postalCode" | "city" | "country" | "domain" | "badge" | "fairYear" | "fairDate" | "createdAt", ExtArgs["result"]["activationEntry"]>
+  export type ActivationEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slug" | "entryId" | "qrCode" | "formId" | "formName" | "ticketType" | "manualOverride" | "email" | "phone" | "fullName" | "streetAddress" | "houseNumber" | "apartmentNumber" | "postalCode" | "city" | "country" | "isActivated" | "activatedAt" | "actFirstName" | "actLastName" | "actEmail" | "actPhone" | "actStreet" | "actHouseNumber" | "actCity" | "actPostalCode" | "actCountry" | "answers" | "dataCenter" | "domain" | "badge" | "fairYear" | "fairDate" | "createdAt" | "accessLog", ExtArgs["result"]["activationEntry"]>
 
   export type $ActivationEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ActivationEntry"
@@ -1204,6 +1519,10 @@ export namespace Prisma {
       slug: string
       entryId: string
       qrCode: string | null
+      formId: number | null
+      formName: string | null
+      ticketType: string | null
+      manualOverride: boolean
       email: string | null
       phone: string | null
       fullName: string | null
@@ -1213,11 +1532,25 @@ export namespace Prisma {
       postalCode: string | null
       city: string | null
       country: string | null
+      isActivated: boolean
+      activatedAt: Date | null
+      actFirstName: string | null
+      actLastName: string | null
+      actEmail: string | null
+      actPhone: string | null
+      actStreet: string | null
+      actHouseNumber: string | null
+      actCity: string | null
+      actPostalCode: string | null
+      actCountry: string | null
+      answers: Prisma.JsonValue | null
+      dataCenter: string | null
       domain: string | null
       badge: string | null
       fairYear: string | null
       fairDate: string | null
       createdAt: Date
+      accessLog: Prisma.JsonValue | null
     }, ExtArgs["result"]["activationEntry"]>
     composites: {}
   }
@@ -1645,6 +1978,10 @@ export namespace Prisma {
     readonly slug: FieldRef<"ActivationEntry", 'String'>
     readonly entryId: FieldRef<"ActivationEntry", 'String'>
     readonly qrCode: FieldRef<"ActivationEntry", 'String'>
+    readonly formId: FieldRef<"ActivationEntry", 'Int'>
+    readonly formName: FieldRef<"ActivationEntry", 'String'>
+    readonly ticketType: FieldRef<"ActivationEntry", 'String'>
+    readonly manualOverride: FieldRef<"ActivationEntry", 'Boolean'>
     readonly email: FieldRef<"ActivationEntry", 'String'>
     readonly phone: FieldRef<"ActivationEntry", 'String'>
     readonly fullName: FieldRef<"ActivationEntry", 'String'>
@@ -1654,11 +1991,25 @@ export namespace Prisma {
     readonly postalCode: FieldRef<"ActivationEntry", 'String'>
     readonly city: FieldRef<"ActivationEntry", 'String'>
     readonly country: FieldRef<"ActivationEntry", 'String'>
+    readonly isActivated: FieldRef<"ActivationEntry", 'Boolean'>
+    readonly activatedAt: FieldRef<"ActivationEntry", 'DateTime'>
+    readonly actFirstName: FieldRef<"ActivationEntry", 'String'>
+    readonly actLastName: FieldRef<"ActivationEntry", 'String'>
+    readonly actEmail: FieldRef<"ActivationEntry", 'String'>
+    readonly actPhone: FieldRef<"ActivationEntry", 'String'>
+    readonly actStreet: FieldRef<"ActivationEntry", 'String'>
+    readonly actHouseNumber: FieldRef<"ActivationEntry", 'String'>
+    readonly actCity: FieldRef<"ActivationEntry", 'String'>
+    readonly actPostalCode: FieldRef<"ActivationEntry", 'String'>
+    readonly actCountry: FieldRef<"ActivationEntry", 'String'>
+    readonly answers: FieldRef<"ActivationEntry", 'Json'>
+    readonly dataCenter: FieldRef<"ActivationEntry", 'String'>
     readonly domain: FieldRef<"ActivationEntry", 'String'>
     readonly badge: FieldRef<"ActivationEntry", 'String'>
     readonly fairYear: FieldRef<"ActivationEntry", 'String'>
     readonly fairDate: FieldRef<"ActivationEntry", 'String'>
     readonly createdAt: FieldRef<"ActivationEntry", 'DateTime'>
+    readonly accessLog: FieldRef<"ActivationEntry", 'Json'>
   }
     
 
@@ -2026,6 +2377,1079 @@ export namespace Prisma {
 
 
   /**
+   * Model ApiError
+   */
+
+  export type AggregateApiError = {
+    _count: ApiErrorCountAggregateOutputType | null
+    _avg: ApiErrorAvgAggregateOutputType | null
+    _sum: ApiErrorSumAggregateOutputType | null
+    _min: ApiErrorMinAggregateOutputType | null
+    _max: ApiErrorMaxAggregateOutputType | null
+  }
+
+  export type ApiErrorAvgAggregateOutputType = {
+    status: number | null
+  }
+
+  export type ApiErrorSumAggregateOutputType = {
+    status: number | null
+  }
+
+  export type ApiErrorMinAggregateOutputType = {
+    id: string | null
+    endpoint: string | null
+    method: string | null
+    message: string | null
+    stack: string | null
+    status: number | null
+    createdAt: Date | null
+  }
+
+  export type ApiErrorMaxAggregateOutputType = {
+    id: string | null
+    endpoint: string | null
+    method: string | null
+    message: string | null
+    stack: string | null
+    status: number | null
+    createdAt: Date | null
+  }
+
+  export type ApiErrorCountAggregateOutputType = {
+    id: number
+    endpoint: number
+    method: number
+    message: number
+    stack: number
+    payload: number
+    response: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ApiErrorAvgAggregateInputType = {
+    status?: true
+  }
+
+  export type ApiErrorSumAggregateInputType = {
+    status?: true
+  }
+
+  export type ApiErrorMinAggregateInputType = {
+    id?: true
+    endpoint?: true
+    method?: true
+    message?: true
+    stack?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type ApiErrorMaxAggregateInputType = {
+    id?: true
+    endpoint?: true
+    method?: true
+    message?: true
+    stack?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type ApiErrorCountAggregateInputType = {
+    id?: true
+    endpoint?: true
+    method?: true
+    message?: true
+    stack?: true
+    payload?: true
+    response?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ApiErrorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiError to aggregate.
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiErrors to fetch.
+     */
+    orderBy?: ApiErrorOrderByWithRelationInput | ApiErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApiErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiErrors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApiErrors
+    **/
+    _count?: true | ApiErrorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApiErrorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApiErrorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApiErrorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApiErrorMaxAggregateInputType
+  }
+
+  export type GetApiErrorAggregateType<T extends ApiErrorAggregateArgs> = {
+        [P in keyof T & keyof AggregateApiError]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApiError[P]>
+      : GetScalarType<T[P], AggregateApiError[P]>
+  }
+
+
+
+
+  export type ApiErrorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApiErrorWhereInput
+    orderBy?: ApiErrorOrderByWithAggregationInput | ApiErrorOrderByWithAggregationInput[]
+    by: ApiErrorScalarFieldEnum[] | ApiErrorScalarFieldEnum
+    having?: ApiErrorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApiErrorCountAggregateInputType | true
+    _avg?: ApiErrorAvgAggregateInputType
+    _sum?: ApiErrorSumAggregateInputType
+    _min?: ApiErrorMinAggregateInputType
+    _max?: ApiErrorMaxAggregateInputType
+  }
+
+  export type ApiErrorGroupByOutputType = {
+    id: string
+    endpoint: string
+    method: string
+    message: string
+    stack: string | null
+    payload: JsonValue | null
+    response: JsonValue | null
+    status: number | null
+    createdAt: Date
+    _count: ApiErrorCountAggregateOutputType | null
+    _avg: ApiErrorAvgAggregateOutputType | null
+    _sum: ApiErrorSumAggregateOutputType | null
+    _min: ApiErrorMinAggregateOutputType | null
+    _max: ApiErrorMaxAggregateOutputType | null
+  }
+
+  type GetApiErrorGroupByPayload<T extends ApiErrorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApiErrorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApiErrorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApiErrorGroupByOutputType[P]>
+            : GetScalarType<T[P], ApiErrorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApiErrorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    endpoint?: boolean
+    method?: boolean
+    message?: boolean
+    stack?: boolean
+    payload?: boolean
+    response?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["apiError"]>
+
+  export type ApiErrorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    endpoint?: boolean
+    method?: boolean
+    message?: boolean
+    stack?: boolean
+    payload?: boolean
+    response?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["apiError"]>
+
+  export type ApiErrorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    endpoint?: boolean
+    method?: boolean
+    message?: boolean
+    stack?: boolean
+    payload?: boolean
+    response?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["apiError"]>
+
+  export type ApiErrorSelectScalar = {
+    id?: boolean
+    endpoint?: boolean
+    method?: boolean
+    message?: boolean
+    stack?: boolean
+    payload?: boolean
+    response?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type ApiErrorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "endpoint" | "method" | "message" | "stack" | "payload" | "response" | "status" | "createdAt", ExtArgs["result"]["apiError"]>
+
+  export type $ApiErrorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApiError"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      endpoint: string
+      method: string
+      message: string
+      stack: string | null
+      payload: Prisma.JsonValue | null
+      response: Prisma.JsonValue | null
+      status: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["apiError"]>
+    composites: {}
+  }
+
+  type ApiErrorGetPayload<S extends boolean | null | undefined | ApiErrorDefaultArgs> = $Result.GetResult<Prisma.$ApiErrorPayload, S>
+
+  type ApiErrorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApiErrorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApiErrorCountAggregateInputType | true
+    }
+
+  export interface ApiErrorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApiError'], meta: { name: 'ApiError' } }
+    /**
+     * Find zero or one ApiError that matches the filter.
+     * @param {ApiErrorFindUniqueArgs} args - Arguments to find a ApiError
+     * @example
+     * // Get one ApiError
+     * const apiError = await prisma.apiError.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApiErrorFindUniqueArgs>(args: SelectSubset<T, ApiErrorFindUniqueArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApiError that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApiErrorFindUniqueOrThrowArgs} args - Arguments to find a ApiError
+     * @example
+     * // Get one ApiError
+     * const apiError = await prisma.apiError.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApiErrorFindUniqueOrThrowArgs>(args: SelectSubset<T, ApiErrorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApiError that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorFindFirstArgs} args - Arguments to find a ApiError
+     * @example
+     * // Get one ApiError
+     * const apiError = await prisma.apiError.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApiErrorFindFirstArgs>(args?: SelectSubset<T, ApiErrorFindFirstArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApiError that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorFindFirstOrThrowArgs} args - Arguments to find a ApiError
+     * @example
+     * // Get one ApiError
+     * const apiError = await prisma.apiError.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApiErrorFindFirstOrThrowArgs>(args?: SelectSubset<T, ApiErrorFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApiErrors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApiErrors
+     * const apiErrors = await prisma.apiError.findMany()
+     * 
+     * // Get first 10 ApiErrors
+     * const apiErrors = await prisma.apiError.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const apiErrorWithIdOnly = await prisma.apiError.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApiErrorFindManyArgs>(args?: SelectSubset<T, ApiErrorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApiError.
+     * @param {ApiErrorCreateArgs} args - Arguments to create a ApiError.
+     * @example
+     * // Create one ApiError
+     * const ApiError = await prisma.apiError.create({
+     *   data: {
+     *     // ... data to create a ApiError
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApiErrorCreateArgs>(args: SelectSubset<T, ApiErrorCreateArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApiErrors.
+     * @param {ApiErrorCreateManyArgs} args - Arguments to create many ApiErrors.
+     * @example
+     * // Create many ApiErrors
+     * const apiError = await prisma.apiError.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApiErrorCreateManyArgs>(args?: SelectSubset<T, ApiErrorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApiErrors and returns the data saved in the database.
+     * @param {ApiErrorCreateManyAndReturnArgs} args - Arguments to create many ApiErrors.
+     * @example
+     * // Create many ApiErrors
+     * const apiError = await prisma.apiError.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApiErrors and only return the `id`
+     * const apiErrorWithIdOnly = await prisma.apiError.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApiErrorCreateManyAndReturnArgs>(args?: SelectSubset<T, ApiErrorCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApiError.
+     * @param {ApiErrorDeleteArgs} args - Arguments to delete one ApiError.
+     * @example
+     * // Delete one ApiError
+     * const ApiError = await prisma.apiError.delete({
+     *   where: {
+     *     // ... filter to delete one ApiError
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApiErrorDeleteArgs>(args: SelectSubset<T, ApiErrorDeleteArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApiError.
+     * @param {ApiErrorUpdateArgs} args - Arguments to update one ApiError.
+     * @example
+     * // Update one ApiError
+     * const apiError = await prisma.apiError.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApiErrorUpdateArgs>(args: SelectSubset<T, ApiErrorUpdateArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApiErrors.
+     * @param {ApiErrorDeleteManyArgs} args - Arguments to filter ApiErrors to delete.
+     * @example
+     * // Delete a few ApiErrors
+     * const { count } = await prisma.apiError.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApiErrorDeleteManyArgs>(args?: SelectSubset<T, ApiErrorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiErrors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApiErrors
+     * const apiError = await prisma.apiError.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApiErrorUpdateManyArgs>(args: SelectSubset<T, ApiErrorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiErrors and returns the data updated in the database.
+     * @param {ApiErrorUpdateManyAndReturnArgs} args - Arguments to update many ApiErrors.
+     * @example
+     * // Update many ApiErrors
+     * const apiError = await prisma.apiError.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApiErrors and only return the `id`
+     * const apiErrorWithIdOnly = await prisma.apiError.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApiErrorUpdateManyAndReturnArgs>(args: SelectSubset<T, ApiErrorUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApiError.
+     * @param {ApiErrorUpsertArgs} args - Arguments to update or create a ApiError.
+     * @example
+     * // Update or create a ApiError
+     * const apiError = await prisma.apiError.upsert({
+     *   create: {
+     *     // ... data to create a ApiError
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApiError we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApiErrorUpsertArgs>(args: SelectSubset<T, ApiErrorUpsertArgs<ExtArgs>>): Prisma__ApiErrorClient<$Result.GetResult<Prisma.$ApiErrorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApiErrors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorCountArgs} args - Arguments to filter ApiErrors to count.
+     * @example
+     * // Count the number of ApiErrors
+     * const count = await prisma.apiError.count({
+     *   where: {
+     *     // ... the filter for the ApiErrors we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApiErrorCountArgs>(
+      args?: Subset<T, ApiErrorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApiErrorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApiError.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApiErrorAggregateArgs>(args: Subset<T, ApiErrorAggregateArgs>): Prisma.PrismaPromise<GetApiErrorAggregateType<T>>
+
+    /**
+     * Group by ApiError.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiErrorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApiErrorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApiErrorGroupByArgs['orderBy'] }
+        : { orderBy?: ApiErrorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApiErrorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApiErrorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApiError model
+   */
+  readonly fields: ApiErrorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApiError.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApiErrorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApiError model
+   */
+  interface ApiErrorFieldRefs {
+    readonly id: FieldRef<"ApiError", 'String'>
+    readonly endpoint: FieldRef<"ApiError", 'String'>
+    readonly method: FieldRef<"ApiError", 'String'>
+    readonly message: FieldRef<"ApiError", 'String'>
+    readonly stack: FieldRef<"ApiError", 'String'>
+    readonly payload: FieldRef<"ApiError", 'Json'>
+    readonly response: FieldRef<"ApiError", 'Json'>
+    readonly status: FieldRef<"ApiError", 'Int'>
+    readonly createdAt: FieldRef<"ApiError", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApiError findUnique
+   */
+  export type ApiErrorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiError to fetch.
+     */
+    where: ApiErrorWhereUniqueInput
+  }
+
+  /**
+   * ApiError findUniqueOrThrow
+   */
+  export type ApiErrorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiError to fetch.
+     */
+    where: ApiErrorWhereUniqueInput
+  }
+
+  /**
+   * ApiError findFirst
+   */
+  export type ApiErrorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiError to fetch.
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiErrors to fetch.
+     */
+    orderBy?: ApiErrorOrderByWithRelationInput | ApiErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiErrors.
+     */
+    cursor?: ApiErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiErrors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiErrors.
+     */
+    distinct?: ApiErrorScalarFieldEnum | ApiErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ApiError findFirstOrThrow
+   */
+  export type ApiErrorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiError to fetch.
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiErrors to fetch.
+     */
+    orderBy?: ApiErrorOrderByWithRelationInput | ApiErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiErrors.
+     */
+    cursor?: ApiErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiErrors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiErrors.
+     */
+    distinct?: ApiErrorScalarFieldEnum | ApiErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ApiError findMany
+   */
+  export type ApiErrorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiErrors to fetch.
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiErrors to fetch.
+     */
+    orderBy?: ApiErrorOrderByWithRelationInput | ApiErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApiErrors.
+     */
+    cursor?: ApiErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiErrors.
+     */
+    skip?: number
+    distinct?: ApiErrorScalarFieldEnum | ApiErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ApiError create
+   */
+  export type ApiErrorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ApiError.
+     */
+    data: XOR<ApiErrorCreateInput, ApiErrorUncheckedCreateInput>
+  }
+
+  /**
+   * ApiError createMany
+   */
+  export type ApiErrorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApiErrors.
+     */
+    data: ApiErrorCreateManyInput | ApiErrorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiError createManyAndReturn
+   */
+  export type ApiErrorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApiErrors.
+     */
+    data: ApiErrorCreateManyInput | ApiErrorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiError update
+   */
+  export type ApiErrorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ApiError.
+     */
+    data: XOR<ApiErrorUpdateInput, ApiErrorUncheckedUpdateInput>
+    /**
+     * Choose, which ApiError to update.
+     */
+    where: ApiErrorWhereUniqueInput
+  }
+
+  /**
+   * ApiError updateMany
+   */
+  export type ApiErrorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApiErrors.
+     */
+    data: XOR<ApiErrorUpdateManyMutationInput, ApiErrorUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiErrors to update
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * Limit how many ApiErrors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiError updateManyAndReturn
+   */
+  export type ApiErrorUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * The data used to update ApiErrors.
+     */
+    data: XOR<ApiErrorUpdateManyMutationInput, ApiErrorUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiErrors to update
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * Limit how many ApiErrors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiError upsert
+   */
+  export type ApiErrorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ApiError to update in case it exists.
+     */
+    where: ApiErrorWhereUniqueInput
+    /**
+     * In case the ApiError found by the `where` argument doesn't exist, create a new ApiError with this data.
+     */
+    create: XOR<ApiErrorCreateInput, ApiErrorUncheckedCreateInput>
+    /**
+     * In case the ApiError was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApiErrorUpdateInput, ApiErrorUncheckedUpdateInput>
+  }
+
+  /**
+   * ApiError delete
+   */
+  export type ApiErrorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+    /**
+     * Filter which ApiError to delete.
+     */
+    where: ApiErrorWhereUniqueInput
+  }
+
+  /**
+   * ApiError deleteMany
+   */
+  export type ApiErrorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiErrors to delete
+     */
+    where?: ApiErrorWhereInput
+    /**
+     * Limit how many ApiErrors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiError without action
+   */
+  export type ApiErrorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiError
+     */
+    select?: ApiErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiError
+     */
+    omit?: ApiErrorOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -2044,6 +3468,10 @@ export namespace Prisma {
     slug: 'slug',
     entryId: 'entryId',
     qrCode: 'qrCode',
+    formId: 'formId',
+    formName: 'formName',
+    ticketType: 'ticketType',
+    manualOverride: 'manualOverride',
     email: 'email',
     phone: 'phone',
     fullName: 'fullName',
@@ -2053,14 +3481,43 @@ export namespace Prisma {
     postalCode: 'postalCode',
     city: 'city',
     country: 'country',
+    isActivated: 'isActivated',
+    activatedAt: 'activatedAt',
+    actFirstName: 'actFirstName',
+    actLastName: 'actLastName',
+    actEmail: 'actEmail',
+    actPhone: 'actPhone',
+    actStreet: 'actStreet',
+    actHouseNumber: 'actHouseNumber',
+    actCity: 'actCity',
+    actPostalCode: 'actPostalCode',
+    actCountry: 'actCountry',
+    answers: 'answers',
+    dataCenter: 'dataCenter',
     domain: 'domain',
     badge: 'badge',
     fairYear: 'fairYear',
     fairDate: 'fairDate',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    accessLog: 'accessLog'
   };
 
   export type ActivationEntryScalarFieldEnum = (typeof ActivationEntryScalarFieldEnum)[keyof typeof ActivationEntryScalarFieldEnum]
+
+
+  export const ApiErrorScalarFieldEnum: {
+    id: 'id',
+    endpoint: 'endpoint',
+    method: 'method',
+    message: 'message',
+    stack: 'stack',
+    payload: 'payload',
+    response: 'response',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type ApiErrorScalarFieldEnum = (typeof ApiErrorScalarFieldEnum)[keyof typeof ApiErrorScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -2071,12 +3528,29 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   export const NullsOrder: {
@@ -2107,6 +3581,27 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -2121,16 +3616,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'Json'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of type 'QueryMode'
    */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -2145,6 +3654,10 @@ export namespace Prisma {
     slug?: StringFilter<"ActivationEntry"> | string
     entryId?: StringFilter<"ActivationEntry"> | string
     qrCode?: StringNullableFilter<"ActivationEntry"> | string | null
+    formId?: IntNullableFilter<"ActivationEntry"> | number | null
+    formName?: StringNullableFilter<"ActivationEntry"> | string | null
+    ticketType?: StringNullableFilter<"ActivationEntry"> | string | null
+    manualOverride?: BoolFilter<"ActivationEntry"> | boolean
     email?: StringNullableFilter<"ActivationEntry"> | string | null
     phone?: StringNullableFilter<"ActivationEntry"> | string | null
     fullName?: StringNullableFilter<"ActivationEntry"> | string | null
@@ -2154,11 +3667,25 @@ export namespace Prisma {
     postalCode?: StringNullableFilter<"ActivationEntry"> | string | null
     city?: StringNullableFilter<"ActivationEntry"> | string | null
     country?: StringNullableFilter<"ActivationEntry"> | string | null
+    isActivated?: BoolFilter<"ActivationEntry"> | boolean
+    activatedAt?: DateTimeNullableFilter<"ActivationEntry"> | Date | string | null
+    actFirstName?: StringNullableFilter<"ActivationEntry"> | string | null
+    actLastName?: StringNullableFilter<"ActivationEntry"> | string | null
+    actEmail?: StringNullableFilter<"ActivationEntry"> | string | null
+    actPhone?: StringNullableFilter<"ActivationEntry"> | string | null
+    actStreet?: StringNullableFilter<"ActivationEntry"> | string | null
+    actHouseNumber?: StringNullableFilter<"ActivationEntry"> | string | null
+    actCity?: StringNullableFilter<"ActivationEntry"> | string | null
+    actPostalCode?: StringNullableFilter<"ActivationEntry"> | string | null
+    actCountry?: StringNullableFilter<"ActivationEntry"> | string | null
+    answers?: JsonNullableFilter<"ActivationEntry">
+    dataCenter?: StringNullableFilter<"ActivationEntry"> | string | null
     domain?: StringNullableFilter<"ActivationEntry"> | string | null
     badge?: StringNullableFilter<"ActivationEntry"> | string | null
     fairYear?: StringNullableFilter<"ActivationEntry"> | string | null
     fairDate?: StringNullableFilter<"ActivationEntry"> | string | null
     createdAt?: DateTimeFilter<"ActivationEntry"> | Date | string
+    accessLog?: JsonNullableFilter<"ActivationEntry">
   }
 
   export type ActivationEntryOrderByWithRelationInput = {
@@ -2166,6 +3693,10 @@ export namespace Prisma {
     slug?: SortOrder
     entryId?: SortOrder
     qrCode?: SortOrderInput | SortOrder
+    formId?: SortOrderInput | SortOrder
+    formName?: SortOrderInput | SortOrder
+    ticketType?: SortOrderInput | SortOrder
+    manualOverride?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     fullName?: SortOrderInput | SortOrder
@@ -2175,22 +3706,41 @@ export namespace Prisma {
     postalCode?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
+    isActivated?: SortOrder
+    activatedAt?: SortOrderInput | SortOrder
+    actFirstName?: SortOrderInput | SortOrder
+    actLastName?: SortOrderInput | SortOrder
+    actEmail?: SortOrderInput | SortOrder
+    actPhone?: SortOrderInput | SortOrder
+    actStreet?: SortOrderInput | SortOrder
+    actHouseNumber?: SortOrderInput | SortOrder
+    actCity?: SortOrderInput | SortOrder
+    actPostalCode?: SortOrderInput | SortOrder
+    actCountry?: SortOrderInput | SortOrder
+    answers?: SortOrderInput | SortOrder
+    dataCenter?: SortOrderInput | SortOrder
     domain?: SortOrderInput | SortOrder
     badge?: SortOrderInput | SortOrder
     fairYear?: SortOrderInput | SortOrder
     fairDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    accessLog?: SortOrderInput | SortOrder
   }
 
   export type ActivationEntryWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
     slug_entryId?: ActivationEntrySlugEntryIdCompoundUniqueInput
+    id_slug?: ActivationEntryIdSlugCompoundUniqueInput
     AND?: ActivationEntryWhereInput | ActivationEntryWhereInput[]
     OR?: ActivationEntryWhereInput[]
     NOT?: ActivationEntryWhereInput | ActivationEntryWhereInput[]
+    id?: StringFilter<"ActivationEntry"> | string
     slug?: StringFilter<"ActivationEntry"> | string
     entryId?: StringFilter<"ActivationEntry"> | string
     qrCode?: StringNullableFilter<"ActivationEntry"> | string | null
+    formId?: IntNullableFilter<"ActivationEntry"> | number | null
+    formName?: StringNullableFilter<"ActivationEntry"> | string | null
+    ticketType?: StringNullableFilter<"ActivationEntry"> | string | null
+    manualOverride?: BoolFilter<"ActivationEntry"> | boolean
     email?: StringNullableFilter<"ActivationEntry"> | string | null
     phone?: StringNullableFilter<"ActivationEntry"> | string | null
     fullName?: StringNullableFilter<"ActivationEntry"> | string | null
@@ -2200,18 +3750,36 @@ export namespace Prisma {
     postalCode?: StringNullableFilter<"ActivationEntry"> | string | null
     city?: StringNullableFilter<"ActivationEntry"> | string | null
     country?: StringNullableFilter<"ActivationEntry"> | string | null
+    isActivated?: BoolFilter<"ActivationEntry"> | boolean
+    activatedAt?: DateTimeNullableFilter<"ActivationEntry"> | Date | string | null
+    actFirstName?: StringNullableFilter<"ActivationEntry"> | string | null
+    actLastName?: StringNullableFilter<"ActivationEntry"> | string | null
+    actEmail?: StringNullableFilter<"ActivationEntry"> | string | null
+    actPhone?: StringNullableFilter<"ActivationEntry"> | string | null
+    actStreet?: StringNullableFilter<"ActivationEntry"> | string | null
+    actHouseNumber?: StringNullableFilter<"ActivationEntry"> | string | null
+    actCity?: StringNullableFilter<"ActivationEntry"> | string | null
+    actPostalCode?: StringNullableFilter<"ActivationEntry"> | string | null
+    actCountry?: StringNullableFilter<"ActivationEntry"> | string | null
+    answers?: JsonNullableFilter<"ActivationEntry">
+    dataCenter?: StringNullableFilter<"ActivationEntry"> | string | null
     domain?: StringNullableFilter<"ActivationEntry"> | string | null
     badge?: StringNullableFilter<"ActivationEntry"> | string | null
     fairYear?: StringNullableFilter<"ActivationEntry"> | string | null
     fairDate?: StringNullableFilter<"ActivationEntry"> | string | null
     createdAt?: DateTimeFilter<"ActivationEntry"> | Date | string
-  }, "id" | "slug_entryId">
+    accessLog?: JsonNullableFilter<"ActivationEntry">
+  }, "id_slug" | "slug_entryId">
 
   export type ActivationEntryOrderByWithAggregationInput = {
     id?: SortOrder
     slug?: SortOrder
     entryId?: SortOrder
     qrCode?: SortOrderInput | SortOrder
+    formId?: SortOrderInput | SortOrder
+    formName?: SortOrderInput | SortOrder
+    ticketType?: SortOrderInput | SortOrder
+    manualOverride?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     fullName?: SortOrderInput | SortOrder
@@ -2221,14 +3789,30 @@ export namespace Prisma {
     postalCode?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
+    isActivated?: SortOrder
+    activatedAt?: SortOrderInput | SortOrder
+    actFirstName?: SortOrderInput | SortOrder
+    actLastName?: SortOrderInput | SortOrder
+    actEmail?: SortOrderInput | SortOrder
+    actPhone?: SortOrderInput | SortOrder
+    actStreet?: SortOrderInput | SortOrder
+    actHouseNumber?: SortOrderInput | SortOrder
+    actCity?: SortOrderInput | SortOrder
+    actPostalCode?: SortOrderInput | SortOrder
+    actCountry?: SortOrderInput | SortOrder
+    answers?: SortOrderInput | SortOrder
+    dataCenter?: SortOrderInput | SortOrder
     domain?: SortOrderInput | SortOrder
     badge?: SortOrderInput | SortOrder
     fairYear?: SortOrderInput | SortOrder
     fairDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    accessLog?: SortOrderInput | SortOrder
     _count?: ActivationEntryCountOrderByAggregateInput
+    _avg?: ActivationEntryAvgOrderByAggregateInput
     _max?: ActivationEntryMaxOrderByAggregateInput
     _min?: ActivationEntryMinOrderByAggregateInput
+    _sum?: ActivationEntrySumOrderByAggregateInput
   }
 
   export type ActivationEntryScalarWhereWithAggregatesInput = {
@@ -2239,6 +3823,10 @@ export namespace Prisma {
     slug?: StringWithAggregatesFilter<"ActivationEntry"> | string
     entryId?: StringWithAggregatesFilter<"ActivationEntry"> | string
     qrCode?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    formId?: IntNullableWithAggregatesFilter<"ActivationEntry"> | number | null
+    formName?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    ticketType?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    manualOverride?: BoolWithAggregatesFilter<"ActivationEntry"> | boolean
     email?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     phone?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     fullName?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
@@ -2248,11 +3836,99 @@ export namespace Prisma {
     postalCode?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     city?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     country?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    isActivated?: BoolWithAggregatesFilter<"ActivationEntry"> | boolean
+    activatedAt?: DateTimeNullableWithAggregatesFilter<"ActivationEntry"> | Date | string | null
+    actFirstName?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actLastName?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actEmail?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actPhone?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actStreet?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actHouseNumber?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actCity?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actPostalCode?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    actCountry?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
+    answers?: JsonNullableWithAggregatesFilter<"ActivationEntry">
+    dataCenter?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     domain?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     badge?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     fairYear?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     fairDate?: StringNullableWithAggregatesFilter<"ActivationEntry"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ActivationEntry"> | Date | string
+    accessLog?: JsonNullableWithAggregatesFilter<"ActivationEntry">
+  }
+
+  export type ApiErrorWhereInput = {
+    AND?: ApiErrorWhereInput | ApiErrorWhereInput[]
+    OR?: ApiErrorWhereInput[]
+    NOT?: ApiErrorWhereInput | ApiErrorWhereInput[]
+    id?: StringFilter<"ApiError"> | string
+    endpoint?: StringFilter<"ApiError"> | string
+    method?: StringFilter<"ApiError"> | string
+    message?: StringFilter<"ApiError"> | string
+    stack?: StringNullableFilter<"ApiError"> | string | null
+    payload?: JsonNullableFilter<"ApiError">
+    response?: JsonNullableFilter<"ApiError">
+    status?: IntNullableFilter<"ApiError"> | number | null
+    createdAt?: DateTimeFilter<"ApiError"> | Date | string
+  }
+
+  export type ApiErrorOrderByWithRelationInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    method?: SortOrder
+    message?: SortOrder
+    stack?: SortOrderInput | SortOrder
+    payload?: SortOrderInput | SortOrder
+    response?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApiErrorWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ApiErrorWhereInput | ApiErrorWhereInput[]
+    OR?: ApiErrorWhereInput[]
+    NOT?: ApiErrorWhereInput | ApiErrorWhereInput[]
+    endpoint?: StringFilter<"ApiError"> | string
+    method?: StringFilter<"ApiError"> | string
+    message?: StringFilter<"ApiError"> | string
+    stack?: StringNullableFilter<"ApiError"> | string | null
+    payload?: JsonNullableFilter<"ApiError">
+    response?: JsonNullableFilter<"ApiError">
+    status?: IntNullableFilter<"ApiError"> | number | null
+    createdAt?: DateTimeFilter<"ApiError"> | Date | string
+  }, "id">
+
+  export type ApiErrorOrderByWithAggregationInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    method?: SortOrder
+    message?: SortOrder
+    stack?: SortOrderInput | SortOrder
+    payload?: SortOrderInput | SortOrder
+    response?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ApiErrorCountOrderByAggregateInput
+    _avg?: ApiErrorAvgOrderByAggregateInput
+    _max?: ApiErrorMaxOrderByAggregateInput
+    _min?: ApiErrorMinOrderByAggregateInput
+    _sum?: ApiErrorSumOrderByAggregateInput
+  }
+
+  export type ApiErrorScalarWhereWithAggregatesInput = {
+    AND?: ApiErrorScalarWhereWithAggregatesInput | ApiErrorScalarWhereWithAggregatesInput[]
+    OR?: ApiErrorScalarWhereWithAggregatesInput[]
+    NOT?: ApiErrorScalarWhereWithAggregatesInput | ApiErrorScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApiError"> | string
+    endpoint?: StringWithAggregatesFilter<"ApiError"> | string
+    method?: StringWithAggregatesFilter<"ApiError"> | string
+    message?: StringWithAggregatesFilter<"ApiError"> | string
+    stack?: StringNullableWithAggregatesFilter<"ApiError"> | string | null
+    payload?: JsonNullableWithAggregatesFilter<"ApiError">
+    response?: JsonNullableWithAggregatesFilter<"ApiError">
+    status?: IntNullableWithAggregatesFilter<"ApiError"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"ApiError"> | Date | string
   }
 
   export type ActivationEntryCreateInput = {
@@ -2260,6 +3936,10 @@ export namespace Prisma {
     slug: string
     entryId: string
     qrCode?: string | null
+    formId?: number | null
+    formName?: string | null
+    ticketType?: string | null
+    manualOverride?: boolean
     email?: string | null
     phone?: string | null
     fullName?: string | null
@@ -2269,11 +3949,25 @@ export namespace Prisma {
     postalCode?: string | null
     city?: string | null
     country?: string | null
+    isActivated?: boolean
+    activatedAt?: Date | string | null
+    actFirstName?: string | null
+    actLastName?: string | null
+    actEmail?: string | null
+    actPhone?: string | null
+    actStreet?: string | null
+    actHouseNumber?: string | null
+    actCity?: string | null
+    actPostalCode?: string | null
+    actCountry?: string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: string | null
     domain?: string | null
     badge?: string | null
     fairYear?: string | null
     fairDate?: string | null
     createdAt?: Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ActivationEntryUncheckedCreateInput = {
@@ -2281,6 +3975,10 @@ export namespace Prisma {
     slug: string
     entryId: string
     qrCode?: string | null
+    formId?: number | null
+    formName?: string | null
+    ticketType?: string | null
+    manualOverride?: boolean
     email?: string | null
     phone?: string | null
     fullName?: string | null
@@ -2290,11 +3988,25 @@ export namespace Prisma {
     postalCode?: string | null
     city?: string | null
     country?: string | null
+    isActivated?: boolean
+    activatedAt?: Date | string | null
+    actFirstName?: string | null
+    actLastName?: string | null
+    actEmail?: string | null
+    actPhone?: string | null
+    actStreet?: string | null
+    actHouseNumber?: string | null
+    actCity?: string | null
+    actPostalCode?: string | null
+    actCountry?: string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: string | null
     domain?: string | null
     badge?: string | null
     fairYear?: string | null
     fairDate?: string | null
     createdAt?: Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ActivationEntryUpdateInput = {
@@ -2302,6 +4014,10 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     qrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableIntFieldUpdateOperationsInput | number | null
+    formName?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketType?: NullableStringFieldUpdateOperationsInput | string | null
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -2311,11 +4027,25 @@ export namespace Prisma {
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    isActivated?: BoolFieldUpdateOperationsInput | boolean
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    actLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    actEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    actPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    actStreet?: NullableStringFieldUpdateOperationsInput | string | null
+    actHouseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    actCity?: NullableStringFieldUpdateOperationsInput | string | null
+    actPostalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    actCountry?: NullableStringFieldUpdateOperationsInput | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: NullableStringFieldUpdateOperationsInput | string | null
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     fairYear?: NullableStringFieldUpdateOperationsInput | string | null
     fairDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ActivationEntryUncheckedUpdateInput = {
@@ -2323,6 +4053,10 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     qrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableIntFieldUpdateOperationsInput | number | null
+    formName?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketType?: NullableStringFieldUpdateOperationsInput | string | null
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -2332,11 +4066,25 @@ export namespace Prisma {
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    isActivated?: BoolFieldUpdateOperationsInput | boolean
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    actLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    actEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    actPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    actStreet?: NullableStringFieldUpdateOperationsInput | string | null
+    actHouseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    actCity?: NullableStringFieldUpdateOperationsInput | string | null
+    actPostalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    actCountry?: NullableStringFieldUpdateOperationsInput | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: NullableStringFieldUpdateOperationsInput | string | null
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     fairYear?: NullableStringFieldUpdateOperationsInput | string | null
     fairDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ActivationEntryCreateManyInput = {
@@ -2344,6 +4092,10 @@ export namespace Prisma {
     slug: string
     entryId: string
     qrCode?: string | null
+    formId?: number | null
+    formName?: string | null
+    ticketType?: string | null
+    manualOverride?: boolean
     email?: string | null
     phone?: string | null
     fullName?: string | null
@@ -2353,11 +4105,25 @@ export namespace Prisma {
     postalCode?: string | null
     city?: string | null
     country?: string | null
+    isActivated?: boolean
+    activatedAt?: Date | string | null
+    actFirstName?: string | null
+    actLastName?: string | null
+    actEmail?: string | null
+    actPhone?: string | null
+    actStreet?: string | null
+    actHouseNumber?: string | null
+    actCity?: string | null
+    actPostalCode?: string | null
+    actCountry?: string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: string | null
     domain?: string | null
     badge?: string | null
     fairYear?: string | null
     fairDate?: string | null
     createdAt?: Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ActivationEntryUpdateManyMutationInput = {
@@ -2365,6 +4131,10 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     qrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableIntFieldUpdateOperationsInput | number | null
+    formName?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketType?: NullableStringFieldUpdateOperationsInput | string | null
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -2374,11 +4144,25 @@ export namespace Prisma {
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    isActivated?: BoolFieldUpdateOperationsInput | boolean
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    actLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    actEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    actPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    actStreet?: NullableStringFieldUpdateOperationsInput | string | null
+    actHouseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    actCity?: NullableStringFieldUpdateOperationsInput | string | null
+    actPostalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    actCountry?: NullableStringFieldUpdateOperationsInput | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: NullableStringFieldUpdateOperationsInput | string | null
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     fairYear?: NullableStringFieldUpdateOperationsInput | string | null
     fairDate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ActivationEntryUncheckedUpdateManyInput = {
@@ -2386,6 +4170,10 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     qrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableIntFieldUpdateOperationsInput | number | null
+    formName?: NullableStringFieldUpdateOperationsInput | string | null
+    ticketType?: NullableStringFieldUpdateOperationsInput | string | null
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -2395,10 +4183,108 @@ export namespace Prisma {
     postalCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
+    isActivated?: BoolFieldUpdateOperationsInput | boolean
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    actLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    actEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    actPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    actStreet?: NullableStringFieldUpdateOperationsInput | string | null
+    actHouseNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    actCity?: NullableStringFieldUpdateOperationsInput | string | null
+    actPostalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    actCountry?: NullableStringFieldUpdateOperationsInput | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    dataCenter?: NullableStringFieldUpdateOperationsInput | string | null
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     fairYear?: NullableStringFieldUpdateOperationsInput | string | null
     fairDate?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accessLog?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type ApiErrorCreateInput = {
+    id?: string
+    endpoint: string
+    method: string
+    message: string
+    stack?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ApiErrorUncheckedCreateInput = {
+    id?: string
+    endpoint: string
+    method: string
+    message: string
+    stack?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ApiErrorUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpoint?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    stack?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiErrorUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpoint?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    stack?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiErrorCreateManyInput = {
+    id?: string
+    endpoint: string
+    method: string
+    message: string
+    stack?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ApiErrorUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpoint?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    stack?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiErrorUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpoint?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    stack?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    response?: NullableJsonNullValueInput | InputJsonValue
+    status?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2432,6 +4318,56 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2453,11 +4389,20 @@ export namespace Prisma {
     entryId: string
   }
 
+  export type ActivationEntryIdSlugCompoundUniqueInput = {
+    id: string
+    slug: string
+  }
+
   export type ActivationEntryCountOrderByAggregateInput = {
     id?: SortOrder
     slug?: SortOrder
     entryId?: SortOrder
     qrCode?: SortOrder
+    formId?: SortOrder
+    formName?: SortOrder
+    ticketType?: SortOrder
+    manualOverride?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     fullName?: SortOrder
@@ -2467,11 +4412,29 @@ export namespace Prisma {
     postalCode?: SortOrder
     city?: SortOrder
     country?: SortOrder
+    isActivated?: SortOrder
+    activatedAt?: SortOrder
+    actFirstName?: SortOrder
+    actLastName?: SortOrder
+    actEmail?: SortOrder
+    actPhone?: SortOrder
+    actStreet?: SortOrder
+    actHouseNumber?: SortOrder
+    actCity?: SortOrder
+    actPostalCode?: SortOrder
+    actCountry?: SortOrder
+    answers?: SortOrder
+    dataCenter?: SortOrder
     domain?: SortOrder
     badge?: SortOrder
     fairYear?: SortOrder
     fairDate?: SortOrder
     createdAt?: SortOrder
+    accessLog?: SortOrder
+  }
+
+  export type ActivationEntryAvgOrderByAggregateInput = {
+    formId?: SortOrder
   }
 
   export type ActivationEntryMaxOrderByAggregateInput = {
@@ -2479,6 +4442,10 @@ export namespace Prisma {
     slug?: SortOrder
     entryId?: SortOrder
     qrCode?: SortOrder
+    formId?: SortOrder
+    formName?: SortOrder
+    ticketType?: SortOrder
+    manualOverride?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     fullName?: SortOrder
@@ -2488,6 +4455,18 @@ export namespace Prisma {
     postalCode?: SortOrder
     city?: SortOrder
     country?: SortOrder
+    isActivated?: SortOrder
+    activatedAt?: SortOrder
+    actFirstName?: SortOrder
+    actLastName?: SortOrder
+    actEmail?: SortOrder
+    actPhone?: SortOrder
+    actStreet?: SortOrder
+    actHouseNumber?: SortOrder
+    actCity?: SortOrder
+    actPostalCode?: SortOrder
+    actCountry?: SortOrder
+    dataCenter?: SortOrder
     domain?: SortOrder
     badge?: SortOrder
     fairYear?: SortOrder
@@ -2500,6 +4479,10 @@ export namespace Prisma {
     slug?: SortOrder
     entryId?: SortOrder
     qrCode?: SortOrder
+    formId?: SortOrder
+    formName?: SortOrder
+    ticketType?: SortOrder
+    manualOverride?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     fullName?: SortOrder
@@ -2509,11 +4492,27 @@ export namespace Prisma {
     postalCode?: SortOrder
     city?: SortOrder
     country?: SortOrder
+    isActivated?: SortOrder
+    activatedAt?: SortOrder
+    actFirstName?: SortOrder
+    actLastName?: SortOrder
+    actEmail?: SortOrder
+    actPhone?: SortOrder
+    actStreet?: SortOrder
+    actHouseNumber?: SortOrder
+    actCity?: SortOrder
+    actPostalCode?: SortOrder
+    actCountry?: SortOrder
+    dataCenter?: SortOrder
     domain?: SortOrder
     badge?: SortOrder
     fairYear?: SortOrder
     fairDate?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ActivationEntrySumOrderByAggregateInput = {
+    formId?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -2552,6 +4551,70 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2566,12 +4629,68 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type ApiErrorCountOrderByAggregateInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    method?: SortOrder
+    message?: SortOrder
+    stack?: SortOrder
+    payload?: SortOrder
+    response?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApiErrorAvgOrderByAggregateInput = {
+    status?: SortOrder
+  }
+
+  export type ApiErrorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    method?: SortOrder
+    message?: SortOrder
+    stack?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApiErrorMinOrderByAggregateInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    method?: SortOrder
+    message?: SortOrder
+    stack?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApiErrorSumOrderByAggregateInput = {
+    status?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -2604,6 +4723,33 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -2662,7 +4808,7 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -2670,7 +4816,68 @@ export namespace Prisma {
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {

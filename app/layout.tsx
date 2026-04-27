@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Providers from "./providers";
 import "./globals.css";
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: "Aktywacja - Ptak Warsaw Expo",
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body className="antialiased">
         <Providers>
           {children}
+          <Toaster position="top-right" richColors />
         </Providers>
       </body>
     </html>

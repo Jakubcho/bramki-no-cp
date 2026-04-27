@@ -10,7 +10,6 @@ export default function AdminEventsPage() {
   const [slug, setSlug] = useState("");
   const { data: session } = useSession();
 
-
   useEffect(() => {
     fetch("/api/events")
       .then(res => res.json())
@@ -25,6 +24,7 @@ export default function AdminEventsPage() {
     });
     location.reload();
   }
+
   async function deleteEvent(id: string) {
     if (!confirm("Usunąć wydarzenie?")) return;
 
@@ -82,9 +82,21 @@ export default function AdminEventsPage() {
                     className="flex-1 flex items-center justify-between px-6 py-5"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                        {e.name.charAt(0).toUpperCase()}
+
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg border border-blue-100 group-hover:border-blue-300 transition-all duration-300 shrink-0">
+                        {e.imageUrl ? (
+                          <img
+                            src={e.imageUrl}
+                            alt=""
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : (
+                          <span className="group-hover:scale-110 transition-transform duration-300">
+                            {e.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
+
                       <div>
                         <p className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
                           {e.name}
@@ -109,8 +121,12 @@ export default function AdminEventsPage() {
                   {session?.user.role === "ADMIN" && (
                     <div className="pr-6">
                       <button
-                        onClick={() => {
-                          if (confirm('Czy na pewno chcesz usunąć to wydarzenie?')) deleteEvent(e.id);
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          if (confirm('Czy na pewno chcesz usunąć to wydarzenie?')) {
+                            deleteEvent(e.id);
+                          }
                         }}
                         className="p-2.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 group/btn"
                         title="Usuń wydarzenie"
@@ -127,7 +143,7 @@ export default function AdminEventsPage() {
 
             {events.length === 0 && (
               <li className="p-16 text-center">
-                <div className="text-4xl mb-4">empty_icon</div>
+                <div className="text-4xl mb-4 text-slate-200">🗓️</div>
                 <p className="text-slate-400 font-medium">Brak zarejestrowanych wydarzeń.</p>
               </li>
             )}
